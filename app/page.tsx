@@ -82,7 +82,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#0a0a0a]">
 
       {/* ── 1. NAVBAR ─────────────────────────────────────────────────────── */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-[#0a0a0a]/80 border-b border-[#1c1c1e]">
+      <nav aria-label="Main navigation" className="sticky top-0 z-50 backdrop-blur-md bg-[#0a0a0a]/80 border-b border-[#1c1c1e]">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <a href="#" className="flex items-center gap-2 font-bold text-white text-base">
             <span className="animate-pulse-emoji">🎯</span>
@@ -114,7 +114,7 @@ export default function Home() {
               <Zap size={12} />
               GummySearch a fermé — prenez leur place 🚀
             </div>
-            <h1 className="font-serif text-5xl md:text-[64px] leading-[1.05] tracking-tight text-white mb-5">
+            <h1 className="font-serif text-5xl md:text-[64px] leading-[1.05] tracking-[-0.01em] text-white mb-5">
               Trouve ce qui convertit sur{' '}
               <span className="text-[#FF4500]">Reddit</span> en 5 min
             </h1>
@@ -251,7 +251,13 @@ export default function Home() {
               <WindowChrome title="Hunt · Find your audience" />
               <div className="p-4">
                 <div className="flex gap-2 mb-4">
-                  <input readOnly value="ai scheduling tool" className="flex-1 bg-[#0a0a0a] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-zinc-300 cursor-default" />
+                  <input
+                    readOnly
+                    value="ai scheduling tool"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    className="flex-1 bg-[#0a0a0a] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-zinc-300 cursor-default"
+                  />
                   <button className="bg-[#FF4500] text-white text-sm font-semibold px-4 py-2 rounded-lg cursor-default">Hunt →</button>
                 </div>
                 {[

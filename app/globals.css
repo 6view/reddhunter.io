@@ -33,3 +33,12 @@
     background-size: 24px 24px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+  .animate-pulse-emoji {
+    animation: none;
+  }
+}

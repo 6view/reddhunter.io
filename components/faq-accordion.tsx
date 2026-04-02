@@ -47,7 +47,7 @@ export function FaqAccordion() {
     <Accordion type="multiple" className="w-full space-y-2">
       {FAQ_ITEMS.map((item, i) => (
         <AccordionItem
-          key={i}
+          key={item.q}
           value={`item-${i}`}
           className="bg-[#111113] border border-[#27272a] rounded-xl px-6 data-[state=open]:border-[#FF4500]/30"
         >

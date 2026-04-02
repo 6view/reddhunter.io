@@ -36,6 +36,7 @@ export function AnimatedCounters() {
   }, [])
 
   const count135 = useCountUp(135, 1500, triggered)
+  const count6 = useCountUp(6, 1200, triggered)
 
   return (
     <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -48,13 +49,20 @@ export function AnimatedCounters() {
         </p>
       </div>
       <div className="bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center">
-        <div className="font-serif text-5xl text-[#FF4500] mb-3">6h</div>
+        <div className="font-serif text-5xl text-[#FF4500] mb-3">
+          {triggered ? `${count6}h` : '0h'}
+        </div>
         <p className="text-[#52525b] text-sm leading-relaxed">
           fréquence de mise à jour des posts
         </p>
       </div>
       <div className="bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center">
-        <div className="font-serif text-5xl text-[#FF4500] mb-3">$5/mo</div>
+        <div
+          className="font-serif text-5xl text-[#FF4500] mb-3 transition-opacity duration-700"
+          style={{ opacity: triggered ? 1 : 0 }}
+        >
+          $5/mo
+        </div>
         <p className="text-[#52525b] text-sm leading-relaxed">
           pour remplacer des heures de veille manuelle
         </p>

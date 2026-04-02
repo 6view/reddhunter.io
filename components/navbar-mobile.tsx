@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Menu } from 'lucide-react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 
 const NAV_LINKS = [
@@ -26,6 +26,9 @@ export function NavbarMobile() {
         </button>
       </SheetTrigger>
       <SheetContent side="right" className="bg-[#111113] border-[#27272a] w-72">
+        <SheetHeader>
+          <SheetTitle className="sr-only">Navigation</SheetTitle>
+        </SheetHeader>
         <nav className="flex flex-col gap-6 mt-8">
           {NAV_LINKS.map((link) => (
             <a
