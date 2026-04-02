@@ -33,21 +33,3 @@
     background-size: 24px 24px;
   }
 }
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-.animate-marquee {
-  animation: marquee 30s linear infinite;
-}
-
-@keyframes pulse-emoji {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
-}
-
-.animate-pulse-emoji {
-  animation: pulse-emoji 2s ease-in-out infinite;
-}
