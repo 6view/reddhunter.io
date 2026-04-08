@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
-import Stripe from 'stripe'
+import type Stripe from 'stripe'
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   }
 
   if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.CheckoutSession
+    const session = event.data.object as Stripe.Checkout.Session
     const userId = session.metadata?.userId
     if (userId) {
       const sub = await stripe.subscriptions.retrieve(session.subscription as string)
