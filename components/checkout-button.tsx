@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
 export function CheckoutButton({
   priceId,
   children,
@@ -11,26 +9,9 @@ export function CheckoutButton({
   children: React.ReactNode
   className?: string
 }) {
-  const [loading, setLoading] = useState(false)
-
-  async function handleClick() {
-    setLoading(true)
-    const res = await fetch('/api/stripe/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId }),
-    })
-    const data = await res.json()
-    if (data.url) {
-      window.location.href = data.url
-    } else {
-      setLoading(false)
-    }
-  }
-
   return (
-    <button onClick={handleClick} disabled={loading} className={className}>
-      {loading ? 'Chargement...' : children}
-    </button>
+    <a href={`/checkout?priceId=${priceId}`} className={className}>
+      {children}
+    </a>
   )
 }
