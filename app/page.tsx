@@ -1,4 +1,5 @@
 import { CTALink, SignInLink } from '@/components/cta-link'
+import { CheckoutButton } from '@/components/checkout-button'
 import { NavbarMobile } from '@/components/navbar-mobile'
 import { MotionSection } from '@/components/motion-section'
 import { MotionGrid, MotionGridItem } from '@/components/motion-grid'
@@ -610,9 +611,12 @@ export default function Home() {
                   <li key={f} className="flex items-center gap-2"><Check size={14} className="text-[#FF4500] shrink-0" />{f}</li>
                 ))}
               </ul>
-              <CTALink className="block text-center py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors mb-3">
+              <CheckoutButton
+                priceId="price_1TJt9DASvSAsZiKVURsmnVg6"
+                className="block w-full text-center py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors mb-3 disabled:opacity-60"
+              >
                 Démarrer pour $5/mois →
-              </CTALink>
+              </CheckoutButton>
               <p className="text-center text-xs text-zinc-600">✓ Annulation en 1 clic · ✓ Sans engagement</p>
             </MotionGridItem>
 
@@ -625,9 +629,12 @@ export default function Home() {
                   <li key={f} className="flex items-center gap-2"><Check size={14} className="text-zinc-600 shrink-0" />{f}</li>
                 ))}
               </ul>
-              <CTALink className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
+              <CheckoutButton
+                priceId="price_1TJt9DASvSAsZiKVi9yVM5EO"
+                className="block w-full text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors disabled:opacity-60"
+              >
                 Démarrer pour $50/an →
-              </CTALink>
+              </CheckoutButton>
             </MotionGridItem>
           </MotionGrid>
         </div>
