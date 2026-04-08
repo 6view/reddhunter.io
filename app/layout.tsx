@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import { Instrument_Serif } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 import { cn } from '@/lib/utils'
 
@@ -34,7 +35,7 @@ export default function RootLayout({
       className={cn('dark', geist.variable, instrumentSerif.variable)}
     >
       <body className="bg-[#0a0a0a] text-white antialiased font-sans">
-        {children}
+        <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>
   )

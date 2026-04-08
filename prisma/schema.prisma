@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  email     String   @unique
+  plan      Plan     @default(FREE)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  savedPosts   SavedPost[]
+  followedSubs FollowedSubreddit[]
+  dailyUsage   DailyUsage[]
+}
+
+enum Plan {
+  FREE
+  PRO
+  PRO_ANNUAL
+}
+
+model SavedPost {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  redditId    String
+  title       String
+  subreddit   String
+  permalink   String
+  score       Int
+  numComments Int
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, redditId])
+}
+
+model FollowedSubreddit {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
+}
+
+model DailyUsage {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   String
+  count  Int    @default(0)
+
+  @@unique([userId, date])
+}

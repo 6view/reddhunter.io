@@ -1,3 +1,4 @@
+import { CTALink, SignInLink } from '@/components/cta-link'
 import { NavbarMobile } from '@/components/navbar-mobile'
 import { MotionSection } from '@/components/motion-section'
 import { MotionGrid, MotionGridItem } from '@/components/motion-grid'
@@ -126,12 +127,12 @@ export default function Home() {
             <a href="#faq"          className="hover:text-white transition-colors">FAQ</a>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            <a href="#" className="px-4 py-1.5 text-sm font-medium border border-[#3f3f46] rounded-md text-zinc-300 hover:text-white hover:border-zinc-400 transition-colors">
+            <SignInLink className="px-4 py-1.5 text-sm font-medium border border-[#3f3f46] rounded-md text-zinc-300 hover:text-white hover:border-zinc-400 transition-colors">
               Sign in
-            </a>
-            <a href="#" className="px-4 py-1.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-md transition-colors">
+            </SignInLink>
+            <CTALink className="px-4 py-1.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-md transition-colors">
               Get Started — $5/mo
-            </a>
+            </CTALink>
           </div>
           <NavbarMobile />
         </div>
@@ -151,9 +152,9 @@ export default function Home() {
               GEO-optimisés — pour $5/mois.
             </p>
             <div className="flex flex-wrap items-center gap-4 mb-5">
-              <a href="#" className="px-5 py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
+              <CTALink className="px-5 py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
                 Commencer gratuitement →
-              </a>
+              </CTALink>
               <a href="#how-it-works" className="text-sm text-zinc-400 underline underline-offset-4 hover:text-white transition-colors">
                 Voir une démo ↓
               </a>
@@ -592,9 +593,9 @@ export default function Home() {
                   <li key={f} className="flex items-center gap-2"><Check size={14} className="text-zinc-600 shrink-0" />{f}</li>
                 ))}
               </ul>
-              <a href="#" className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
+              <CTALink className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
                 Commencer gratuitement
-              </a>
+              </CTALink>
             </MotionGridItem>
 
             <MotionGridItem className="bg-[#0f0a08] border-2 border-[#FF4500] rounded-xl p-6 flex flex-col relative">
@@ -609,9 +610,9 @@ export default function Home() {
                   <li key={f} className="flex items-center gap-2"><Check size={14} className="text-[#FF4500] shrink-0" />{f}</li>
                 ))}
               </ul>
-              <a href="#" className="block text-center py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors mb-3">
+              <CTALink className="block text-center py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors mb-3">
                 Démarrer pour $5/mois →
-              </a>
+              </CTALink>
               <p className="text-center text-xs text-zinc-600">✓ Annulation en 1 clic · ✓ Sans engagement</p>
             </MotionGridItem>
 
@@ -624,9 +625,9 @@ export default function Home() {
                   <li key={f} className="flex items-center gap-2"><Check size={14} className="text-zinc-600 shrink-0" />{f}</li>
                 ))}
               </ul>
-              <a href="#" className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
+              <CTALink className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
                 Démarrer pour $50/an →
-              </a>
+              </CTALink>
             </MotionGridItem>
           </MotionGrid>
         </div>
@@ -656,12 +657,12 @@ export default function Home() {
               leur audience — en moins de 5 minutes.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-              <a href="#" className="px-6 py-3 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
+              <CTALink className="px-6 py-3 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
                 Démarrer gratuitement →
-              </a>
-              <a href="#" className="px-6 py-3 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
+              </CTALink>
+              <CTALink className="px-6 py-3 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
                 2 mois offert
-              </a>
+              </CTALink>
             </div>
             <p className="text-xs text-zinc-600 mb-16">3 recherches gratuites par jour · Sans carte bancaire</p>
           </MotionSection>

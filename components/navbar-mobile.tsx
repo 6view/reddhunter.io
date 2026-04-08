@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Menu } from 'lucide-react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
+import { CTALink, SignInLink } from '@/components/cta-link'
 
 const NAV_LINKS = [
   { href: '#features',     label: 'Features' },
@@ -46,10 +47,10 @@ export function NavbarMobile() {
               className="border-[#3f3f46] text-zinc-300 bg-transparent hover:bg-[#1c1c1e] hover:text-white"
               asChild
             >
-              <a href="#">Sign in</a>
+              <SignInLink>Sign in</SignInLink>
             </Button>
             <Button className="bg-[#FF4500] hover:bg-[#CC3700] text-white" asChild>
-              <a href="#">Get Started — $5/mo</a>
+              <CTALink>Get Started — $5/mo</CTALink>
             </Button>
           </div>
         </nav>
