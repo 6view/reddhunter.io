@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Bookmark, ExternalLink, ArrowUp, Trash2 } from 'lucide-react'
+import { Bookmark, ExternalLink, ArrowUp, Trash2, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface SavedPost {
@@ -16,17 +16,11 @@ interface SavedPost {
 }
 
 const SUB_COLORS: Record<string, string> = {
-  indiehackers:  '#FF4500',
-  SaaS:          '#0dd3bb',
-  startups:      '#ff585b',
-  Entrepreneur:  '#46d160',
-  buildinpublic: '#ff4081',
-  growthhacking: '#ffb300',
-  sidehustle:    '#00b0ff',
+  indiehackers: '#FF4500', SaaS: '#0dd3bb', startups: '#ff585b',
+  Entrepreneur: '#46d160', buildinpublic: '#ff4081',
+  growthhacking: '#ffb300', sidehustle: '#00b0ff',
 }
-function subColor(sub: string) {
-  return SUB_COLORS[sub] ?? '#818384'
-}
+function subColor(sub: string) { return SUB_COLORS[sub] ?? '#52525b' }
 
 function timeAgo(isoDate: string): string {
   const diff = Date.now() - new Date(isoDate).getTime()
@@ -49,28 +43,31 @@ export default function SavedPage() {
   }, [])
 
   async function handleRemove(redditId: string) {
-    // Optimistic
     setPosts(prev => prev.filter(p => p.redditId !== redditId))
     await fetch(`/api/saved/${redditId}`, { method: 'DELETE' })
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-6 py-10">
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="font-serif text-[36px] text-white leading-tight mb-2">Favoris</h1>
-        <p className="text-zinc-500 text-[13px] leading-relaxed max-w-lg">
-          Retrouve tous les posts que tu as sauvegardés.<br />
-          Ils persistent entre tes sessions.
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Dashboard</span>
+          <span className="text-zinc-700">/</span>
+          <span className="text-[11px] font-semibold uppercase tracking-widest text-[#FF4500]">Favoris</span>
+        </div>
+        <h1 className="text-[32px] font-semibold text-white tracking-[-0.02em] leading-tight mb-2">Favoris</h1>
+        <p className="text-zinc-600 text-[13px] leading-relaxed">
+          Tous tes posts sauvegardés — persistants entre sessions.
         </p>
       </div>
 
       {/* Count */}
-      {!loading && (
-        <div className="flex items-center gap-2 mb-6">
-          <Bookmark size={14} className="text-yellow-500 fill-yellow-500" />
-          <span className="text-[13px] text-zinc-400">
+      {!loading && posts.length > 0 && (
+        <div className="flex items-center gap-2 mb-5 px-4 py-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] w-fit">
+          <Bookmark size={12} className="text-[#FFB300] fill-[#FFB300]" />
+          <span className="text-[12px] text-zinc-400 font-medium">
             {posts.length} post{posts.length !== 1 ? 's' : ''} sauvegardé{posts.length !== 1 ? 's' : ''}
           </span>
         </div>
@@ -78,22 +75,20 @@ export default function SavedPage() {
 
       {/* Loading */}
       {loading && (
-        <div className="flex flex-col gap-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white border border-[#e5e5e5] rounded-xl h-28 animate-pulse" />
-          ))}
+        <div className="flex items-center justify-center py-20">
+          <Loader2 size={18} className="text-zinc-700 animate-spin" />
         </div>
       )}
 
       {/* Empty */}
       {!loading && posts.length === 0 && (
-        <div className="text-center py-20">
-          <Bookmark size={32} className="text-zinc-700 mx-auto mb-4" />
-          <p className="text-zinc-500 text-[14px] mb-2">Aucun post sauvegardé pour l&apos;instant.</p>
-          <Link
-            href="/dashboard/explore"
-            className="text-[#FF4500] text-[13px] hover:underline"
-          >
+        <div className="flex flex-col items-center text-center py-20 gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.07] flex items-center justify-center">
+            <Bookmark size={22} className="text-zinc-700" />
+          </div>
+          <p className="text-zinc-500 text-[14px]">Aucun post sauvegardé</p>
+          <Link href="/dashboard/explore"
+            className="text-[13px] text-[#FF4500] hover:text-[#FF6B35] transition-colors font-medium">
             Explorer le feed →
           </Link>
         </div>
@@ -101,65 +96,52 @@ export default function SavedPage() {
 
       {/* Posts */}
       {!loading && posts.length > 0 && (
-        <div className="flex flex-col gap-3">
-          {posts.map(post => (
-            <article
-              key={post.id}
-              className="flex bg-white border border-[#e5e5e5] rounded-xl hover:border-[#d4d4d4] transition-all overflow-hidden group"
-            >
-              {/* Vote col */}
-              <div className="flex flex-col items-center gap-1 px-2.5 py-3 w-10 flex-shrink-0 bg-[#f6f7f8]">
-                <ArrowUp size={16} className="text-[#878a8c]" />
-                <span className="text-[11px] font-bold text-[#1c1c1c]">
-                  {post.score >= 1000 ? `${(post.score / 1000).toFixed(1)}k` : post.score}
-                </span>
-              </div>
+        <div className="flex flex-col gap-2.5">
+          {posts.map(post => {
+            const color = subColor(post.subreddit)
+            const scoreDisplay = post.score >= 1000 ? `${(post.score / 1000).toFixed(1)}k` : String(post.score)
+            return (
+              <article key={post.id}
+                className="flex rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all overflow-hidden group">
 
-              {/* Content */}
-              <div className="flex-1 min-w-0 py-3 pr-4">
-
-                {/* Meta */}
-                <div className="flex items-center gap-1.5 text-[11px] text-[#878a8c] mb-2">
-                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ backgroundColor: subColor(post.subreddit) }} />
-                  <span className="font-semibold text-[#1c1c1c]">r/{post.subreddit}</span>
-                  <span>·</span>
-                  <span>Sauvegardé {timeAgo(post.createdAt)}</span>
-                  <span className="ml-auto text-[10px]">💬 {post.numComments.toLocaleString()}</span>
+                {/* Vote col */}
+                <div className="flex flex-col items-center gap-1 px-2.5 py-4 w-11 flex-shrink-0 bg-white/[0.02] border-r border-white/[0.05]">
+                  <ArrowUp size={15} className="text-zinc-700" />
+                  <span className="text-[11px] font-bold text-zinc-400">{scoreDisplay}</span>
                 </div>
 
-                {/* Title */}
-                <h3 className="text-[16px] font-medium text-[#1c1c1c] leading-snug mb-3">
-                  {post.title}
-                </h3>
+                {/* Content */}
+                <div className="flex-1 min-w-0 py-3.5 pr-4 pl-4">
+                  <div className="flex items-center gap-1.5 text-[11px] text-zinc-600 mb-2">
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
+                    <span className="font-semibold text-zinc-400">r/{post.subreddit}</span>
+                    <span>·</span>
+                    <span>Sauvegardé {timeAgo(post.createdAt)}</span>
+                    <span className="ml-auto text-[10px] text-zinc-700">💬 {post.numComments.toLocaleString()}</span>
+                  </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-1.5">
-                  <a
-                    href={post.permalink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2.5 py-1 rounded text-[12px] font-medium text-[#878a8c] hover:bg-[#f6f7f8] hover:text-[#1c1c1c] transition-colors"
-                  >
-                    <ExternalLink size={12} /> Voir sur Reddit
-                  </a>
+                  <h3 className="text-[15px] font-medium text-zinc-200 leading-snug mb-3 group-hover:text-white transition-colors">
+                    {post.title}
+                  </h3>
 
-                  <Link
-                    href={`/dashboard/post/${post.redditId}`}
-                    className="flex items-center gap-1 px-3 py-1 rounded text-[12px] font-semibold text-[#FF4500] hover:bg-[#FF4500]/10 transition-colors"
-                  >
-                    Inspecter →
-                  </Link>
-
-                  <button
-                    onClick={() => handleRemove(post.redditId)}
-                    className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded text-[12px] font-medium text-[#878a8c] hover:bg-red-50 hover:text-red-500 transition-colors"
-                  >
-                    <Trash2 size={12} /> Retirer
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <a href={post.permalink} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] text-zinc-600 hover:text-zinc-300 hover:bg-white/[0.05] transition-all">
+                      <ExternalLink size={10} /> Reddit
+                    </a>
+                    <Link href={`/dashboard/post/${post.redditId}`}
+                      className="flex items-center gap-1 px-3 py-1 rounded-lg text-[11px] font-semibold text-[#FF4500] hover:bg-[#FF4500]/10 border border-transparent hover:border-[#FF4500]/20 transition-all">
+                      Inspecter →
+                    </Link>
+                    <button onClick={() => handleRemove(post.redditId)}
+                      className="ml-auto flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] text-zinc-700 hover:text-red-400 hover:bg-red-500/10 transition-all">
+                      <Trash2 size={10} /> Retirer
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            )
+          })}
         </div>
       )}
     </div>

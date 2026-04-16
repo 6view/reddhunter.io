@@ -1,15 +1,36 @@
 import Link from 'next/link'
-import { Flame, Compass, Search, Bookmark, Settings } from 'lucide-react'
+import { Flame, Compass, Search, Bookmark, Settings, FlaskConical, Zap } from 'lucide-react'
 import { SignOutButton } from '@/components/sign-out-button'
+import { Logo } from '@/components/logo'
+import { auth } from '@clerk/nextjs'
+import { prisma } from '@/lib/prisma'
+
+async function getUserPlan() {
+  const { userId: clerkId } = auth()
+  if (!clerkId) return null
+  const user = await prisma.user.findUnique({ where: { clerkId }, select: { plan: true } })
+  return user?.plan ?? null
+}
+
+const PLAN_LABELS: Record<string, { label: string; color: string }> = {
+  PRO:          { label: 'Pro',        color: '#FF4500' },
+  PRO_ANNUAL:   { label: 'Pro Annual', color: '#FF4500' },
+  PRO_AI:       { label: 'Pro AI',     color: '#a855f7' },
+  PRO_AI_ANNUAL:{ label: 'Pro AI Annual', color: '#a855f7' },
+}
 
 const NAV = [
-  { href: '/dashboard/explore', icon: Compass,  label: 'Explore' },
-  { href: '/dashboard/hunt',    icon: Search,   label: 'Hunt' },
-  { href: '/dashboard/saved',   icon: Bookmark, label: 'Favoris' },
-  { href: '/dashboard/settings',icon: Settings, label: 'Paramètres' },
+  { href: '/dashboard/explore',icon: Compass,       label: 'Explore' },
+  { href: '/dashboard/hunt',   icon: Search,        label: 'Hunt' },
+  { href: '/dashboard/saved',  icon: Bookmark,      label: 'Favoris' },
+  { href: '/dashboard/ia-lab', icon: FlaskConical,  label: 'IA Lab', highlight: true },
+  { href: '/dashboard/settings',icon: Settings,     label: 'Paramètres' },
 ]
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const plan = await getUserPlan()
+  const planInfo = plan ? PLAN_LABELS[plan] : null
+  const isAI = plan === 'PRO_AI' || plan === 'PRO_AI_ANNUAL'
   return (
     <div className="flex min-h-screen bg-[#0a0a0a]">
 
@@ -18,47 +39,53 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Logo */}
         <div className="h-14 flex items-center gap-2.5 px-5 border-b border-[#1c1c1e]">
-          <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
-            <rect width="32" height="32" rx="7" fill="#111113"/>
-            <rect x="1.5"  y="23"  width="3.5" height="7.5"  rx="0.5" fill="#7A2800"/>
-            <rect x="6"    y="19.5" width="3.5" height="11"   rx="0.5" fill="#A33500"/>
-            <rect x="10.5" y="15.5" width="3.5" height="15"   rx="0.5" fill="#CC4400"/>
-            <rect x="15"   y="11.5" width="3.5" height="19"   rx="0.5" fill="#E85000"/>
-            <rect x="19.5" y="7.5"  width="3.5" height="23"   rx="0.5" fill="#FF5500"/>
-            <rect x="24"   y="4"    width="4"   height="26.5" rx="0.5" fill="#FF7835"/>
-            <path d="M2 25 Q8 19 16 13 Q22 9 28.5 3.5" stroke="#FF4500" strokeWidth="1.2" strokeDasharray="1.5,2" fill="none" strokeLinecap="round"/>
-            <path d="M27 2.5 L30.5 4 L28 6.5" stroke="#FF4500" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M18 8 L12 18 L16.5 18 L13 27 L22 16 L17.5 16 Z" fill="white" stroke="#111113" strokeWidth="0.5"/>
-            <circle cx="16.5" cy="4.5" r="2.8" fill="white"/>
-          </svg>
-          <span className="font-bold text-white text-[15px]">Reddhunter</span>
+          <Logo size={26} />
+          <span className="font-bold text-white text-[15px] tracking-tight">Reddhunter</span>
         </div>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 flex flex-col gap-1">
-          {NAV.map(({ href, icon: Icon, label }) => (
+          {NAV.map(({ href, icon: Icon, label, highlight }) => (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-[#111113] transition-colors group"
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors group ${
+                highlight
+                  ? 'text-[#FF4500] hover:bg-[#FF4500]/10 hover:text-[#FF6B35]'
+                  : 'text-zinc-400 hover:text-white hover:bg-[#111113]'
+              }`}
             >
-              <Icon size={16} className="flex-shrink-0 group-hover:text-[#FF4500] transition-colors" />
+              <Icon size={16} className={`flex-shrink-0 transition-colors ${highlight ? 'text-[#FF4500]' : 'group-hover:text-[#FF4500]'}`} />
               {label}
+              {highlight && (
+                <span className="ml-auto text-[9px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded-full bg-[#FF4500]/15 text-[#FF4500]">New</span>
+              )}
             </Link>
           ))}
         </nav>
 
         {/* Bottom */}
-        <div className="px-3 py-4 border-t border-[#1c1c1e] flex flex-col gap-1">
-          <div className="flex items-center gap-3 px-3 py-2">
-            <div className="w-7 h-7 rounded-full bg-[#FF4500]/20 flex items-center justify-center">
-              <Flame size={13} className="text-[#FF4500]" />
+        <div className="px-3 py-4 border-t border-[#1c1c1e] flex flex-col gap-2">
+          {/* Plan badge */}
+          {planInfo && (
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/[0.02]">
+              <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: `${planInfo.color}20` }}>
+                {isAI
+                  ? <Zap size={13} style={{ color: planInfo.color }} />
+                  : <Flame size={13} style={{ color: planInfo.color }} />
+                }
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[12px] font-semibold text-zinc-300 truncate">{planInfo.label}</p>
+                {!isAI && (
+                  <Link href="/#pricing" className="text-[10px] text-[#FF4500]/70 hover:text-[#FF4500] transition-colors">
+                    Upgrade to Pro AI →
+                  </Link>
+                )}
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-[12px] font-medium text-zinc-300 truncate">Free plan</p>
-              <p className="text-[10px] text-zinc-600">3 recherches/jour</p>
-            </div>
-          </div>
+          )}
           <SignOutButton />
         </div>
       </aside>

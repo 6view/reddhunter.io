@@ -1,231 +1,538 @@
 import { CTALink, SignInLink } from '@/components/cta-link'
 import { CheckoutButton } from '@/components/checkout-button'
-import { NavbarMobile } from '@/components/navbar-mobile'
+import { Navbar } from '@/components/navbar'
+import { HeroBackground } from '@/components/hero-background'
 import { MotionSection } from '@/components/motion-section'
 import { MotionGrid, MotionGridItem } from '@/components/motion-grid'
 import { AnimatedCounters } from '@/components/animated-counters'
 import { FaqAccordion } from '@/components/faq-accordion'
+import { Logo } from '@/components/logo'
 import {
-  Zap, TrendingUp, Globe, BarChart2,
-  MessageSquare, Search, Flame, Send,
-  Check, Twitter, Mail,
+  Zap, TrendingUp, Globe, BarChart2, MessageSquare,
+  Search, Flame, Send, Check, Twitter, Mail,
+  ArrowRight, Rss, Sparkles, Target, Clock,
 } from 'lucide-react'
 
-// ─── Logo ────────────────────────────────────────────────────────────────────
 
-function Logo({ size = 28 }: { size?: number }) {
+// ─── Command Palette Mockup ──────────────────────────────────────────────────
+function CommandPalette() {
+  const posts = [
+    { sub: 'r/indiehackers', title: 'How I got my first 100 paying customers using Reddit (no paid ads)', upvotes: '1.2k', time: '4h ago', score: 92, color: 'bg-orange-500/20 text-orange-400' },
+    { sub: 'r/SaaS',         title: "Launched my scheduling tool 3 weeks ago — here's what actually moved the needle", upvotes: '847', time: '8h ago', score: 87, color: 'bg-blue-500/20 text-blue-400' },
+    { sub: 'r/startups',     title: 'Why most B2B founders ignore Reddit and leave money on the table', upvotes: '503', time: '12h ago', score: 74, color: 'bg-purple-500/20 text-purple-400' },
+  ]
   return (
-    <svg viewBox="0 0 32 32" width={size} height={size} fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Reddhunter logo">
-      {/* Background */}
-      <rect width="32" height="32" rx="7" fill="#111113"/>
-      {/* Bar chart — 6 bars, left→right, dark→bright orange */}
-      <rect x="1.5"  y="23"  width="3.5" height="7.5"  rx="0.5" fill="#7A2800"/>
-      <rect x="6"    y="19.5" width="3.5" height="11"   rx="0.5" fill="#A33500"/>
-      <rect x="10.5" y="15.5" width="3.5" height="15"   rx="0.5" fill="#CC4400"/>
-      <rect x="15"   y="11.5" width="3.5" height="19"   rx="0.5" fill="#E85000"/>
-      <rect x="19.5" y="7.5"  width="3.5" height="23"   rx="0.5" fill="#FF5500"/>
-      <rect x="24"   y="4"    width="4"   height="26.5" rx="0.5" fill="#FF7835"/>
-      {/* Dotted upward trend line */}
-      <path d="M2 25 Q8 19 16 13 Q22 9 28.5 3.5"
-        stroke="#FF4500" strokeWidth="1.2" strokeDasharray="1.5,2"
-        fill="none" strokeLinecap="round"/>
-      {/* Arrow tip */}
-      <path d="M27 2.5 L30.5 4 L28 6.5"
-        stroke="#FF4500" strokeWidth="1.2" fill="none"
-        strokeLinecap="round" strokeLinejoin="round"/>
-      {/* Lightning bolt */}
-      <path d="M18 8 L12 18 L16.5 18 L13 27 L22 16 L17.5 16 Z"
-        fill="white" stroke="#111113" strokeWidth="0.5"/>
-      {/* Head circle */}
-      <circle cx="16.5" cy="4.5" r="2.8" fill="white"/>
-    </svg>
-  )
-}
+    <div className="w-full max-w-xl mx-auto animate-float">
+      {/* Window chrome */}
+      <div className="bg-[#111115] rounded-2xl border border-white/[0.08] shadow-[0_40px_80px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.04)] overflow-hidden">
+        {/* Top bar */}
+        <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-[#0d0d10]">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+            <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          </div>
+          <div className="flex-1 flex items-center gap-2 ml-2 bg-white/[0.04] rounded-lg px-3 py-1.5 border border-white/[0.05]">
+            <Search size={12} className="text-white/30" />
+            <span className="text-white/40 text-xs">Explore Reddit intelligence…</span>
+            <span className="ml-auto text-[10px] text-white/20 bg-white/[0.05] px-1.5 py-0.5 rounded border border-white/[0.08]">⌘K</span>
+          </div>
+        </div>
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+        {/* Results */}
+        <div className="divide-y divide-white/[0.04]">
+          {posts.map((post, i) => (
+            <div
+              key={i}
+              className={`px-4 py-3.5 flex items-start gap-3 transition-colors duration-150 ${i === 0 ? 'bg-white/[0.05]' : 'hover:bg-white/[0.03]'}`}
+            >
+              <div className="mt-0.5">
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${post.color} border border-current/20`}>
+                  {post.sub}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-white/80 text-xs font-medium leading-snug mb-1.5 line-clamp-2">{post.title}</p>
+                <div className="flex items-center gap-2 text-[10px] text-white/25">
+                  <span>🔺 {post.upvotes}</span>
+                  <span>·</span>
+                  <span>⏱ {post.time}</span>
+                </div>
+              </div>
+              <div className="shrink-0 text-right">
+                <div className="text-xs font-bold text-[#FF4500]">{post.score}</div>
+                <div className="text-[9px] text-white/25">viral</div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-function SubBadge({
-  sub,
-  variant,
-}: {
-  sub: string
-  variant: 'orange' | 'green' | 'blue'
-}) {
-  const styles = {
-    orange: 'bg-[rgba(255,69,0,0.12)] text-[#FF6B35] border border-[rgba(255,69,0,0.25)]',
-    green:  'bg-[rgba(22,163,74,0.1)] text-[#4ade80] border border-[rgba(22,163,74,0.2)]',
-    blue:   'bg-[rgba(37,99,235,0.1)] text-[#60a5fa] border border-[rgba(37,99,235,0.2)]',
-  }
-  return (
-    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${styles[variant]}`}>
-      {sub}
-    </span>
-  )
-}
-
-function PostCard({
-  sub, subVariant, title, upvotes, comments, timeAgo, viralScore,
-}: {
-  sub: string
-  subVariant: 'orange' | 'green' | 'blue'
-  title: string
-  upvotes: string
-  comments: string
-  timeAgo: string
-  viralScore: number
-}) {
-  return (
-    <div className="px-4 py-3 border-b border-[#1a1a1c] last:border-0">
-      <div className="mb-1.5">
-        <SubBadge sub={sub} variant={subVariant} />
-      </div>
-      <p className="text-[#e4e4e7] text-xs font-medium leading-snug mb-2">{title}</p>
-      <div className="flex items-center gap-2 text-[10px] text-[#52525b]">
-        <span>🔺 {upvotes}</span>
-        <span>💬 {comments}</span>
-        <span>⏱ {timeAgo}</span>
-        <span className="ml-auto text-[#FF6B35] font-bold bg-[rgba(255,69,0,0.1)] border border-[rgba(255,69,0,0.25)] px-2 py-0.5 rounded-full">
-          {viralScore}/100
-        </span>
+        {/* Bottom bar */}
+        <div className="px-4 py-2.5 border-t border-white/[0.05] bg-[#0d0d10] flex items-center justify-between">
+          <div className="flex items-center gap-3 text-[10px] text-white/20">
+            <span className="flex items-center gap-1"><span className="bg-white/[0.06] px-1.5 py-0.5 rounded border border-white/[0.08]">↑↓</span> navigate</span>
+            <span className="flex items-center gap-1"><span className="bg-white/[0.06] px-1.5 py-0.5 rounded border border-white/[0.08]">↵</span> open</span>
+          </div>
+          <div className="flex items-center gap-1 text-[10px] text-white/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF4500]/60 animate-pulse" />
+            Updated 6h ago
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-function WindowChrome({ title }: { title: string }) {
+// ─── Feature card ────────────────────────────────────────────────────────────
+function FeatureCard({ icon, gradient, title, desc }: {
+  icon: React.ReactNode; gradient: string; title: string; desc: string
+}) {
   return (
-    <div className="bg-[#0f0f11] border-b border-[#1c1c1e] px-4 py-2.5 flex items-center gap-1.5">
-      <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-      <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-      <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-      <span className="ml-3 text-[11px] text-zinc-500 font-medium">{title}</span>
+    <div className="group bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] hover:border-white/[0.12] rounded-2xl p-5 transition-all duration-200 cursor-default">
+      <div className={`w-10 h-10 rounded-xl ${gradient} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-200`}>
+        {icon}
+      </div>
+      <h3 className="text-white text-sm font-semibold mb-1.5 tracking-tight">{title}</h3>
+      <p className="text-white/40 text-xs leading-relaxed">{desc}</p>
     </div>
   )
 }
 
-const SUBREDDITS = [
-  'r/indiehackers', 'r/SaaS', 'r/startups', 'r/entrepreneur',
-  'r/buildinpublic', 'r/growthhacking', 'r/sidehustle',
-]
+// ─── Subreddit chip ──────────────────────────────────────────────────────────
+const SUBREDDITS = ['r/indiehackers','r/SaaS','r/startups','r/entrepreneur','r/buildinpublic','r/growthhacking','r/sidehustle']
 
 // ─── Page ────────────────────────────────────────────────────────────────────
-
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[#07080a] overflow-x-hidden">
 
-      {/* ── 1. NAVBAR ─────────────────────────────────────────────────────── */}
-      <nav aria-label="Main navigation" className="sticky top-0 z-50 backdrop-blur-md bg-[#0a0a0a]/80 border-b border-[#1c1c1e]">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-2 font-bold text-white text-base">
-            <Logo />
-            Reddhunter
-          </a>
-          <div className="hidden md:flex items-center gap-8 text-sm text-zinc-400">
-            <a href="#features"     className="hover:text-white transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-white transition-colors">How it works</a>
-            <a href="#pricing"      className="hover:text-white transition-colors">Pricing</a>
-            <a href="#faq"          className="hover:text-white transition-colors">FAQ</a>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <SignInLink className="px-4 py-1.5 text-sm font-medium border border-[#3f3f46] rounded-md text-zinc-300 hover:text-white hover:border-zinc-400 transition-colors">
-              Sign in
-            </SignInLink>
-            <CTALink className="px-4 py-1.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-md transition-colors">
-              Get Started — $5/mo
-            </CTALink>
-          </div>
-          <NavbarMobile />
-        </div>
-      </nav>
+      {/* ── NAVBAR ───────────────────────────────────────────────────────── */}
+      <Navbar />
 
-      {/* ── 2. HERO ───────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-24 md:py-32">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <MotionSection>
-            <h1 className="font-serif text-5xl md:text-[64px] leading-[1.05] tracking-[-0.01em] text-white mb-5">
-              Trouve ce qui convertit sur{' '}
-              <span className="text-[#FF4500]">Reddit</span> en 5 min
-            </h1>
-            <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-lg">
-              Reddhunter scrape automatiquement les posts viraux de ta niche,
-              génère des Viral Scores IA, et rédige tes commentaires
-              GEO-optimisés — pour $5/mois.
-            </p>
-            <div className="flex flex-wrap items-center gap-4 mb-5">
-              <CTALink className="px-5 py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
-                Commencer gratuitement →
-              </CTALink>
-              <a href="#how-it-works" className="text-sm text-zinc-400 underline underline-offset-4 hover:text-white transition-colors">
-                Voir une démo ↓
-              </a>
-            </div>
-            <p className="text-xs text-zinc-600">
-              ✓ 3 recherches gratuites/jour · ✓ Sans carte bancaire · ✓ Setup en 2 min
-            </p>
-          </MotionSection>
+      {/* ── 1. HERO ──────────────────────────────────────────────────────── */}
+      <section className="relative flex flex-col items-center text-center px-6 pt-36 pb-20 md:pt-44 md:pb-28 overflow-hidden">
+        {/* Animated canvas background */}
+        <HeroBackground />
 
-          <MotionSection>
-            <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden shadow-2xl">
-              <WindowChrome title="Reddhunter · Explore" />
-              <PostCard sub="r/indiehackers" subVariant="orange" title="How I got my first 100 paying customers using Reddit comments (no paid ads)" upvotes="1.2k" comments="89"  timeAgo="4h ago"  viralScore={92} />
-              <PostCard sub="r/SaaS"         subVariant="green"  title="Launched my scheduling tool 3 weeks ago — here's what actually moved the needle"      upvotes="847"  comments="134" timeAgo="8h ago"  viralScore={87} />
-              <PostCard sub="r/startups"     subVariant="blue"   title="Why most B2B founders ignore Reddit and leave money on the table"                       upvotes="503"  comments="61"  timeAgo="12h ago" viralScore={74} />
-            </div>
-          </MotionSection>
-        </div>
-      </section>
+        <MotionSection className="relative z-10">
+          {/* Headline */}
+          <h1 className="text-[clamp(2.4rem,6.5vw,4.5rem)] font-semibold tracking-[-0.03em] leading-[1.08] text-white mb-5 max-w-3xl mx-auto">
+            Your shortcut to{' '}
+            <span className="bg-gradient-to-r from-[#FF6B35] via-[#FF4500] to-[#E83D00] bg-clip-text text-transparent">
+              Reddit growth.
+            </span>
+          </h1>
 
-      {/* ── LLM LOGOS BAR ─────────────────────────────────────────────────── */}
-      <section className="border-y border-[#1c1c1e] py-7 bg-[#0a0a0a]">
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="text-center text-[10px] font-semibold uppercase tracking-widest text-zinc-600 mb-6">
-            Generate Revenue from LLMs
+          {/* Sub */}
+          <p className="text-[17px] text-white/50 max-w-lg mx-auto mb-10 leading-relaxed font-normal">
+            Find viral posts, score their potential, write GEO-optimized comments.
+            All in one interface. From $5/month.
           </p>
-          <div className="flex items-center justify-center gap-10 md:gap-16 flex-wrap">
 
-            {/* ChatGPT */}
-            <div className="flex items-center gap-2.5 text-zinc-300">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-label="ChatGPT">
-                <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
-              </svg>
-              <span className="text-sm font-semibold">ChatGPT</span>
-            </div>
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
+            <CTALink
+              shine
+              className="flex items-center gap-2 px-6 py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#e63d00] text-white rounded-lg transition-all duration-200 hover:shadow-[0_0_28px_rgba(255,69,0,0.4)]"
+            >
+              Get started for free
+              <ArrowRight size={14} />
+            </CTALink>
+            <a
+              href="#features"
+              className="flex items-center gap-2 px-6 py-2.5 text-sm font-medium text-white/50 hover:text-white/80 rounded-lg border border-white/[0.07] hover:border-white/[0.15] transition-all duration-200"
+            >
+              See how it works
+            </a>
+          </div>
 
-            <div className="w-px h-4 bg-[#27272a]" />
+          {/* Trust line */}
+          <p className="text-xs text-white/25 mb-12">
+            From $5/month · Cancel anytime · 2-minute setup
+          </p>
+        </MotionSection>
 
-            {/* Perplexity */}
-            <div className="flex items-center gap-2.5 text-zinc-300">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-label="Perplexity">
-                <path d="M22.197 6.843h-7.67l6.077-5.266-1.118-1.29-6.374 5.525V0h-1.722v5.812L5.516.287 4.397 1.577l6.077 5.266H.803V8.56h4.7v6.507H.803v1.716h4.7v7.217h1.722v-7.217h9.55v7.217h1.722v-7.217h4.7v-1.716h-4.7V8.56h4.7V6.843zM7.225 8.56h9.55v6.507h-9.55V8.56z"/>
-              </svg>
-              <span className="text-sm font-semibold">Perplexity</span>
-            </div>
+        {/* Command Palette */}
+        <MotionSection className="relative z-10 w-full max-w-xl mx-auto px-4">
+          <CommandPalette />
+        </MotionSection>
+      </section>
 
-            <div className="w-px h-4 bg-[#27272a]" />
+      {/* ── 2. LOGOS BAR ─────────────────────────────────────────────────── */}
+      <section className="py-10 px-4 flex flex-col items-center gap-5 bg-[#07080a]">
+        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/20">
+          Your content gets indexed in
+        </p>
 
-            {/* Gemini */}
-            <div className="flex items-center gap-2.5 text-zinc-300">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-label="Gemini">
-                <path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z"/>
-              </svg>
-              <span className="text-sm font-semibold">Gemini</span>
-            </div>
+        {/* Pill container */}
+        <div className="w-full max-w-2xl rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm overflow-hidden py-5 relative">
+          {/* Fade masks inside the pill */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-[#0d0d0f] to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-[#0d0d0f] to-transparent z-10" />
 
-
+          <div className="flex animate-marquee-reverse whitespace-nowrap w-max gap-10 px-4">
+            {[
+              {
+                name: 'ChatGPT',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg>,
+              },
+              {
+                name: 'Claude',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-1.235-.072L1 12.514l.057-.326.562-.57.692-.17 1.809.121 2.389.17 1.747.17h.146l-.195-.389-1.867-3.39-1.39-2.687-.733-1.56-.032-.472.276-.44.48-.196.648.066.42.284.838 1.43 1.36 2.39 1.504 2.687.243.45.042-.065-.018-.331-.309-2.095-.37-2.461-.162-1.52.162-.39.337-.31.657.049.645.34.293.42.226 1.748.258 1.665.307 1.924.097.742-.065.6-.178.456-.439.236-.634.123-.839-.146-1.019-.42-1.634-.68-2.866-1.01-3.25.13-.472.47-.351.494-.171.632.034.548.244 1.146 2.157 1.26 2.606.58 1.312.274.582.097.339.195-.227.727-.971 1.114-1.39 1.343-1.665 1.682-1.277 1.488-.889 1.01L17.83 5.4l.131-.017.285.082.374.3.08.487-.194.43-1.553 1.812-1.456 1.764-1.114 1.52-.678 1.022-.276.527.42-.017 1.374-.21 2.405-.307 1.763-.194.986.05.51.26.293.504-.016.487-.26.39-.873.098-2.014.178-2.746.243-1.325.105h-.163l.066.146.952 1.65.841 1.326.678 1.13.21.617-.12.529-.37.317-.53.033-.661-.236-1.2-1.877-.954-1.65-.516-.971-.13-.236-.033.05-.468 2.318-.354 1.78-.435 1.618-.27.52-.452.244-.58-.163-.42-.39-.065-.577.306-1.504.5-2.17.468-2.12.08-.439-.048-.033-.276.244-1.601 1.504-1.763 1.585-1.423 1.22-.873.59-.759.29-.63-.123-.384-.44v-.49l.332-.43.743-.374.938-.735 1.326-1.15 1.747-1.601 1.26-1.22.21-.227h-.05l-.353.13-2.55.825-2.761.889-1.293.34-.613-.05-.45-.34-.162-.5.13-.48.42-.38.953-.245z"/></svg>,
+              },
+              {
+                name: 'Gemini',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z"/></svg>,
+              },
+              {
+                name: 'Perplexity',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22.197 6.843h-7.67l6.077-5.266-1.118-1.29-6.374 5.525V0h-1.722v5.812L5.516.287 4.397 1.577l6.077 5.266H.803V8.56h4.7v6.507H.803v1.716h4.7v7.217h1.722v-7.217h9.55v7.217h1.722v-7.217h4.7v-1.716h-4.7V8.56h4.7V6.843zM7.225 8.56h9.55v6.507h-9.55V8.56z"/></svg>,
+              },
+              {
+                name: 'Grok',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
+              },
+              {
+                name: 'Meta AI',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.918 9.45c.677-1.044 1.573-1.885 2.618-2.38a5.13 5.13 0 0 1 2.236-.494c1.157 0 2.225.378 3.13 1.046l.366.27c-.734-.372-1.561-.588-2.443-.588-1.008 0-1.96.29-2.77.787-.81.5-1.487 1.21-1.964 2.072-.476.862-.745 1.858-.745 2.916 0 .62.086 1.22.247 1.79a6.26 6.26 0 0 0 .681 1.558c-.65-.996-1.03-2.183-1.03-3.46 0-.584.079-1.149.224-1.682a6.304 6.304 0 0 1-.35.165zm8.524-.947c.588.455 1.08 1.028 1.443 1.68.365.655.594 1.394.654 2.18.06.784-.04 1.578-.286 2.328-.247.75-.647 1.447-1.174 2.04a5.53 5.53 0 0 1-1.88 1.355 5.456 5.456 0 0 1-2.272.47 5.61 5.61 0 0 1-1.79-.293c.75.384 1.594.604 2.489.604 1.008 0 1.96-.29 2.77-.788a5.573 5.573 0 0 0 1.964-2.072c.476-.862.745-1.858.745-2.916 0-.758-.136-1.48-.386-2.15a5.924 5.924 0 0 0-1.077-1.84l-.2.402zm-5.46 8.21a5.116 5.116 0 0 1-1.493-1.565 5.17 5.17 0 0 1-.73-2.065 5.232 5.232 0 0 1 .156-2.206 5.168 5.168 0 0 1 1.014-1.94 5.1 5.1 0 0 1 1.72-1.35 5.06 5.06 0 0 1 2.121-.459c1.268 0 2.42.463 3.295 1.224l-.228-.43a5.534 5.534 0 0 0-1.915-1.63 5.585 5.585 0 0 0-2.52-.59c-1.008 0-1.96.29-2.77.788a5.573 5.573 0 0 0-1.964 2.072c-.476.862-.745 1.858-.745 2.916 0 1.053.267 2.045.74 2.906a5.631 5.631 0 0 0 1.977 2.084 5.57 5.57 0 0 0 2.802.762c.428 0 .844-.048 1.244-.14a5.138 5.138 0 0 1-2.704-.377z"/></svg>,
+              },
+              {
+                name: 'Mistral',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M0 0h4v4H0zm6.667 0h4v4h-4zM0 6.667h4v4H0zm6.667 0h4v4h-4zm6.666 0h4v4h-4zm3.334-6.667h4v4h-4zM13.333 0h4v4h-4zM0 13.333h4v4H0zm6.667 0h4v4h-4zm6.666 0h4v4h-4zM0 20h4v4H0zm13.333 0h4v4h-4zm6.667 0h4v4h-4zm0-6.667h4v4h-4z"/></svg>,
+              },
+            ].concat([
+              {
+                name: 'ChatGPT',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg>,
+              },
+              {
+                name: 'Claude',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-1.235-.072L1 12.514l.057-.326.562-.57.692-.17 1.809.121 2.389.17 1.747.17h.146l-.195-.389-1.867-3.39-1.39-2.687-.733-1.56-.032-.472.276-.44.48-.196.648.066.42.284.838 1.43 1.36 2.39 1.504 2.687.243.45.042-.065-.018-.331-.309-2.095-.37-2.461-.162-1.52.162-.39.337-.31.657.049.645.34.293.42.226 1.748.258 1.665.307 1.924.097.742-.065.6-.178.456-.439.236-.634.123-.839-.146-1.019-.42-1.634-.68-2.866-1.01-3.25.13-.472.47-.351.494-.171.632.034.548.244 1.146 2.157 1.26 2.606.58 1.312.274.582.097.339.195-.227.727-.971 1.114-1.39 1.343-1.665 1.682-1.277 1.488-.889 1.01L17.83 5.4l.131-.017.285.082.374.3.08.487-.194.43-1.553 1.812-1.456 1.764-1.114 1.52-.678 1.022-.276.527.42-.017 1.374-.21 2.405-.307 1.763-.194.986.05.51.26.293.504-.016.487-.26.39-.873.098-2.014.178-2.746.243-1.325.105h-.163l.066.146.952 1.65.841 1.326.678 1.13.21.617-.12.529-.37.317-.53.033-.661-.236-1.2-1.877-.954-1.65-.516-.971-.13-.236-.033.05-.468 2.318-.354 1.78-.435 1.618-.27.52-.452.244-.58-.163-.42-.39-.065-.577.306-1.504.5-2.17.468-2.12.08-.439-.048-.033-.276.244-1.601 1.504-1.763 1.585-1.423 1.22-.873.59-.759.29-.63-.123-.384-.44v-.49l.332-.43.743-.374.938-.735 1.326-1.15 1.747-1.601 1.26-1.22.21-.227h-.05l-.353.13-2.55.825-2.761.889-1.293.34-.613-.05-.45-.34-.162-.5.13-.48.42-.38.953-.245z"/></svg>,
+              },
+              {
+                name: 'Gemini',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12z"/></svg>,
+              },
+              {
+                name: 'Perplexity',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M22.197 6.843h-7.67l6.077-5.266-1.118-1.29-6.374 5.525V0h-1.722v5.812L5.516.287 4.397 1.577l6.077 5.266H.803V8.56h4.7v6.507H.803v1.716h4.7v7.217h1.722v-7.217h9.55v7.217h1.722v-7.217h4.7v-1.716h-4.7V8.56h4.7V6.843zM7.225 8.56h9.55v6.507h-9.55V8.56z"/></svg>,
+              },
+              {
+                name: 'Grok',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
+              },
+              {
+                name: 'Meta AI',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6.918 9.45c.677-1.044 1.573-1.885 2.618-2.38a5.13 5.13 0 0 1 2.236-.494c1.157 0 2.225.378 3.13 1.046l.366.27c-.734-.372-1.561-.588-2.443-.588-1.008 0-1.96.29-2.77.787-.81.5-1.487 1.21-1.964 2.072-.476.862-.745 1.858-.745 2.916 0 .62.086 1.22.247 1.79a6.26 6.26 0 0 0 .681 1.558c-.65-.996-1.03-2.183-1.03-3.46 0-.584.079-1.149.224-1.682a6.304 6.304 0 0 1-.35.165zm8.524-.947c.588.455 1.08 1.028 1.443 1.68.365.655.594 1.394.654 2.18.06.784-.04 1.578-.286 2.328-.247.75-.647 1.447-1.174 2.04a5.53 5.53 0 0 1-1.88 1.355 5.456 5.456 0 0 1-2.272.47 5.61 5.61 0 0 1-1.79-.293c.75.384 1.594.604 2.489.604 1.008 0 1.96-.29 2.77-.788a5.573 5.573 0 0 0 1.964-2.072c.476-.862.745-1.858.745-2.916 0-.758-.136-1.48-.386-2.15a5.924 5.924 0 0 0-1.077-1.84l-.2.402zm-5.46 8.21a5.116 5.116 0 0 1-1.493-1.565 5.17 5.17 0 0 1-.73-2.065 5.232 5.232 0 0 1 .156-2.206 5.168 5.168 0 0 1 1.014-1.94 5.1 5.1 0 0 1 1.72-1.35 5.06 5.06 0 0 1 2.121-.459c1.268 0 2.42.463 3.295 1.224l-.228-.43a5.534 5.534 0 0 0-1.915-1.63 5.585 5.585 0 0 0-2.52-.59c-1.008 0-1.96.29-2.77.788a5.573 5.573 0 0 0-1.964 2.072c-.476.862-.745 1.858-.745 2.916 0 1.053.267 2.045.74 2.906a5.631 5.631 0 0 0 1.977 2.084 5.57 5.57 0 0 0 2.802.762c.428 0 .844-.048 1.244-.14a5.138 5.138 0 0 1-2.704-.377z"/></svg>,
+              },
+              {
+                name: 'Mistral',
+                icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M0 0h4v4H0zm6.667 0h4v4h-4zM0 6.667h4v4H0zm6.667 0h4v4h-4zm6.666 0h4v4h-4zm3.334-6.667h4v4h-4zM13.333 0h4v4h-4zM0 13.333h4v4H0zm6.667 0h4v4h-4zm6.666 0h4v4h-4zM0 20h4v4H0zm13.333 0h4v4h-4zm6.667 0h4v4h-4zm0-6.667h4v4h-4z"/></svg>,
+              },
+            ]).map(({ name, icon }, i) => (
+              <div key={`${name}-${i}`} className="relative overflow-hidden inline-flex items-center gap-2.5 text-white/60 cursor-default select-none group">
+                <span className="text-white/50">{icon}</span>
+                <span className="text-[13px] font-semibold tracking-tight text-white/70">{name}</span>
+                <span className="pointer-events-none absolute inset-0 -translate-x-full animate-shine bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── 3. MARQUEE ───────────────────────────────────────────────────── */}
-      <section className="border-y border-[#1c1c1e] py-4 overflow-hidden bg-[#0a0a0a]">
-        <p className="text-center text-[10px] font-medium uppercase tracking-widest text-zinc-600 mb-3">
-          Utilisé par des founders qui construisent sur
+      {/* ── 3. STATS ─────────────────────────────────────────────────────── */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <MotionSection>
+            <AnimatedCounters />
+          </MotionSection>
+        </div>
+      </section>
+
+      {/* ── 4. FEATURES GRID ─────────────────────────────────────────────── */}
+      <section id="features" className="border-t border-white/[0.05] py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <MotionSection className="mb-14">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#FF4500]/70 mb-3">Everything you need</p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1] max-w-sm">
+                One tool. Zero guesswork.
+              </h2>
+              <p className="text-white/40 text-sm max-w-xs leading-relaxed">
+                Stop scrolling. Start converting. Every feature built for Reddit-led growth.
+              </p>
+            </div>
+          </MotionSection>
+
+          <MotionGrid className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              {
+                icon: <Rss size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-[#FF4500] to-[#cc3700]',
+                title: 'Viral Posts Feed',
+                desc: 'Auto-curated posts from your niche subreddits, refreshed every 6 hours.',
+              },
+              {
+                icon: <Target size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-blue-500 to-blue-700',
+                title: 'Audience Hunter',
+                desc: 'Find exactly where your potential customers hang out on Reddit.',
+              },
+              {
+                icon: <BarChart2 size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-purple-500 to-purple-700',
+                title: 'Viral Score AI',
+                desc: 'Every post scored 0–100 with an AI explanation of why it performed.',
+              },
+              {
+                icon: <MessageSquare size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-emerald-500 to-emerald-700',
+                title: 'Comment Starter',
+                desc: 'One-click AI-generated comments, GEO-optimized for LLM indexing.',
+              },
+              {
+                icon: <Globe size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-pink-500 to-pink-700',
+                title: 'GEO Optimization',
+                desc: 'Build a Reddit presence that gets cited by ChatGPT, Perplexity, Gemini.',
+              },
+              {
+                icon: <Clock size={16} className="text-white" />,
+                gradient: 'bg-gradient-to-br from-amber-500 to-amber-700',
+                title: 'Real-time Updates',
+                desc: 'Fresh Reddit intelligence delivered every 6 hours. Always current.',
+              },
+            ].map((f) => (
+              <MotionGridItem key={f.title}>
+                <FeatureCard {...f} />
+              </MotionGridItem>
+            ))}
+          </MotionGrid>
+        </div>
+      </section>
+
+      {/* ── 5. FEATURE DETAIL: HUNT ──────────────────────────────────────── */}
+      <section className="border-t border-white/[0.05] py-24 px-6 bg-[#07080a]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            <MotionSection>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#FF4500]/70 mb-4">
+                Hunt · Find your audience
+              </p>
+              <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1] mb-5">
+                Know exactly where your customers are.
+              </h2>
+              <p className="text-white/40 text-sm leading-relaxed mb-8 max-w-sm">
+                Type any keyword. Reddhunter searches Reddit in real time and returns
+                the most active subreddits, their member counts, and activity levels.
+                One click to go comment.
+              </p>
+              <ul className="space-y-3">
+                {[
+                  'Real-time Reddit API search',
+                  'Member count + activity score',
+                  'Direct link to subreddit',
+                  'Top recent posts per community',
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-3 text-sm text-white/60">
+                    <div className="w-4 h-4 rounded-full bg-[#FF4500]/15 flex items-center justify-center shrink-0">
+                      <Check size={10} className="text-[#FF4500]" />
+                    </div>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </MotionSection>
+
+            <MotionSection>
+              <div className="bg-[#0d0d10] border border-white/[0.07] rounded-2xl overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                {/* Chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.05]">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-[#ff5f57]" />
+                    <div className="w-2 h-2 rounded-full bg-[#febc2e]" />
+                    <div className="w-2 h-2 rounded-full bg-[#28c840]" />
+                  </div>
+                  <span className="text-xs text-white/25 ml-2 font-medium">Hunt · Find your audience</span>
+                </div>
+                {/* Search */}
+                <div className="p-4">
+                  <div className="flex gap-2 mb-5">
+                    <div className="flex-1 bg-white/[0.04] border border-white/[0.07] rounded-lg px-3 py-2.5 flex items-center gap-2">
+                      <Search size={12} className="text-white/25" />
+                      <span className="text-sm text-white/50">ai scheduling tool</span>
+                    </div>
+                    <div className="bg-[#FF4500] text-white text-xs font-semibold px-4 py-2.5 rounded-lg flex items-center">
+                      Hunt →
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    {[
+                      { sub: 'r/productivity',   members: '2.3M',  hot: true },
+                      { sub: 'r/sideprojects',   members: '328k',  hot: false },
+                      { sub: 'r/Entrepreneur',   members: '1.8M',  hot: true },
+                    ].map((r, i) => (
+                      <div key={r.sub} className={`flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors ${i === 0 ? 'bg-white/[0.05]' : 'hover:bg-white/[0.03]'}`}>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="text-white text-sm font-medium">{r.sub}</p>
+                            {r.hot && <span className="text-[9px] font-bold text-[#FF4500] bg-[#FF4500]/10 px-1.5 py-0.5 rounded-full">HOT</span>}
+                          </div>
+                          <p className="text-white/25 text-xs mt-0.5">{r.members} members</p>
+                        </div>
+                        <span className="text-[#FF4500] text-xs font-semibold">Comment →</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </MotionSection>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6. FEATURE DETAIL: AI ────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.05] py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+            <MotionSection className="order-last lg:order-first">
+              <div className="space-y-3">
+                {/* Viral Score card */}
+                <div className="bg-[#0d0d10] border border-white/[0.07] rounded-2xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center">
+                        <BarChart2 size={14} className="text-white" />
+                      </div>
+                      <span className="text-white text-sm font-semibold">Viral Score AI</span>
+                    </div>
+                    <span className="text-2xl font-semibold text-[#FF4500] tracking-tight">92</span>
+                  </div>
+                  <div className="w-full bg-white/[0.05] rounded-full h-1 mb-4">
+                    <div className="bg-gradient-to-r from-[#FF4500] to-[#FF6B35] h-1 rounded-full" style={{ width: '92%' }} />
+                  </div>
+                  <p className="text-white/30 text-xs leading-relaxed">
+                    "I did X" + personal story + actionable data. Optimal timing (Tue 9AM EST). Exceptional engagement ratio.
+                  </p>
+                </div>
+
+                {/* Comment Starter card */}
+                <div className="bg-[#0d0d10] border border-white/[0.07] rounded-2xl p-5">
+                  <div className="flex items-center gap-2.5 mb-4">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
+                      <MessageSquare size={14} className="text-white" />
+                    </div>
+                    <span className="text-white text-sm font-semibold">Comment Starter</span>
+                    <span className="ml-auto text-[10px] font-medium text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">GEO-optimized</span>
+                  </div>
+                  <div className="font-mono text-[11px] text-white/35 leading-relaxed bg-black/30 rounded-xl p-3 border border-white/[0.04]">
+                    <span className="text-white/20">// draft</span><br/><br/>
+                    <span className="text-emerald-400/70">Great breakdown.</span>{' '}I&apos;ve been using{' '}
+                    <span className="text-blue-400/70">Reddhunter</span> for this — it surfaces these posts
+                    automatically. The <span className="text-[#FF4500]/70">Viral Score</span> explains exactly
+                    why certain formats crush it.
+                  </div>
+                </div>
+              </div>
+            </MotionSection>
+
+            <MotionSection>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#FF4500]/70 mb-4">
+                Powered by AI
+              </p>
+              <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1] mb-5">
+                The AI that understands<br className="hidden md:block" /> what makes Reddit tick.
+              </h2>
+              <p className="text-white/40 text-sm leading-relaxed mb-8 max-w-sm">
+                Every post analyzed, every pattern decoded. Reddhunter&apos;s AI tells you not just
+                what performed — but why, and how to replicate it for your product.
+              </p>
+              <CTALink
+                shine
+                className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#e63d00] text-white rounded-lg transition-all hover:shadow-[0_0_20px_rgba(255,69,0,0.35)]"
+              >
+                Try it free <ArrowRight size={14} />
+              </CTALink>
+            </MotionSection>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 7. SOCIAL PROOF ──────────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.05] py-24 px-6 bg-[#07080a]">
+        <div className="max-w-6xl mx-auto">
+          <MotionSection className="text-center mb-14">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25 mb-3">The opportunity</p>
+            <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1]">
+              The gap widens every month.
+            </h2>
+          </MotionSection>
+
+          <MotionSection>
+            <div className="bg-[#0d0d10] border border-white/[0.07] rounded-2xl p-7 md:p-10">
+              <div className="flex items-center gap-5 mb-6 justify-end">
+                <div className="flex items-center gap-2">
+                  <svg width="20" height="2"><line x1="0" y1="1" x2="20" y2="1" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4,3" /></svg>
+                  <span className="text-white/30 text-xs">Without GEO</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg width="20" height="2"><line x1="0" y1="1" x2="20" y2="1" stroke="#FF4500" strokeWidth="2.5" /></svg>
+                  <span className="text-white/70 text-xs font-medium">With GEO Reddit</span>
+                </div>
+              </div>
+              <svg viewBox="0 0 600 260" className="w-full" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="rh-grad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#FF4500" stopOpacity="0.15" />
+                    <stop offset="100%" stopColor="#FF4500" stopOpacity="0.01" />
+                  </linearGradient>
+                </defs>
+                {[40,85,130,175,215].map((y) => (
+                  <line key={y} x1="60" y1={y} x2="568" y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+                ))}
+                <path d="M60,215 C160,217 260,219 360,221 C460,222 520,222 568,222 L568,222 C520,222 460,222 360,221 C260,219 160,217 60,215Z" fill="none" />
+                <path d="M60,215 C110,207 130,199 160,193 C200,184 230,171 260,161 C300,146 330,129 360,118 C400,101 430,80 460,64 C500,40 530,20 568,4 L568,222 C500,222 430,222 360,222 C300,222 230,222 160,221 C130,221 110,220 60,220Z" fill="url(#rh-grad)" />
+                <path d="M60,215 C160,217 260,219 360,221 C460,222 520,222 568,222" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeDasharray="5,3" />
+                <path d="M60,215 C110,207 130,199 160,193 C200,184 230,171 260,161 C300,146 330,129 360,118 C400,101 430,80 460,64 C500,40 530,20 568,4" fill="none" stroke="#FF4500" strokeWidth="2" />
+                {([[60,215],[160,193],[260,161],[360,118],[460,64],[568,4]] as [number,number][]).map(([x,y]) => (
+                  <circle key={x} cx={x} cy={y} r="3.5" fill="#FF4500" stroke="#0d0d10" strokeWidth="2" />
+                ))}
+                {['M1','M2','M3','M4','M5','M6'].map((l,i) => (
+                  <text key={l} x={60+i*101.6} y={245} textAnchor="middle" fill="rgba(255,255,255,0.2)" fontSize="9" fontFamily="var(--font-geist)">{l}</text>
+                ))}
+                <text x="574" y="8" fill="#FF4500" fontSize="9" fontWeight="600" fontFamily="var(--font-geist)">+220%</text>
+                <text x="574" y="226" fill="rgba(255,255,255,0.2)" fontSize="9" fontFamily="var(--font-geist)">−8%</text>
+              </svg>
+              <div className="mt-7 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-baseline gap-3">
+                  <span className="font-semibold text-4xl text-[#FF4500] tracking-tight">+220%</span>
+                  <span className="text-white/35 text-sm max-w-xs">LLM visibility in 6 months with an active Reddit GEO strategy¹²³</span>
+                </div>
+                <p className="text-sm italic text-white/25 max-w-xs sm:text-right leading-relaxed">
+                  &quot;You&apos;re $5 away from changing your business.&quot;
+                </p>
+              </div>
+            </div>
+            <div className="mt-4 space-y-1">
+              <p className="text-[10px] text-white/15">¹ SparkToro / Datos.io (2024) — Reddit is among the top 3 sources cited by ChatGPT for B2B product recommendations.</p>
+              <p className="text-[10px] text-white/15">² Semrush (2024) — Reddit content appears in 60%+ of Google AI Overviews for SaaS-related queries.</p>
+              <p className="text-[10px] text-white/15">³ BrightEdge Research (2024) — AI-generated traffic grew +1,300% in 18 months; brands with Reddit presence convert 2.4× better.</p>
+            </div>
+          </MotionSection>
+        </div>
+      </section>
+
+      {/* ── 8. SUBREDDITS MARQUEE ────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.05] py-5 overflow-hidden">
+        <p className="text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-white/15 mb-3">
+          Used by founders building on
         </p>
         <div className="overflow-hidden">
-          <div className="flex gap-3 animate-marquee whitespace-nowrap w-max">
+          <div className="flex gap-2.5 animate-marquee whitespace-nowrap w-max">
             {[...SUBREDDITS, ...SUBREDDITS].map((sub, i) => (
-              <span key={i} className="bg-[#111113] border border-[#27272a] text-zinc-500 text-xs font-medium px-3 py-1.5 rounded-full">
+              <span key={i} className="bg-white/[0.03] border border-white/[0.06] text-white/30 text-xs font-medium px-3 py-1.5 rounded-full">
                 {sub}
               </span>
             ))}
@@ -233,503 +540,213 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. STAT COUNTERS ──────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-24">
-        <MotionSection>
-          <AnimatedCounters />
-        </MotionSection>
-      </section>
-
-      {/* ── SOCIAL PROOF CHART ────────────────────────────────────────────── */}
-      <section className="border-t border-[#1c1c1e] py-24 bg-[#0a0a0a]">
-        <div className="max-w-5xl mx-auto px-6">
-          <MotionSection className="text-center mb-12">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-4">
-              Données vérifiées
-            </span>
-            <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-              L&apos;écart se creuse chaque mois.
-            </h2>
-          </MotionSection>
-
-          <MotionSection>
-            <div className="bg-[#111113] border border-[#27272a] rounded-2xl p-6 md:p-10">
-              {/* Legend */}
-              <div className="flex items-center gap-6 mb-6 justify-end">
-                <div className="flex items-center gap-2">
-                  <svg width="24" height="2"><line x1="0" y1="1" x2="24" y2="1" stroke="#52525b" strokeWidth="2" strokeDasharray="4,3" /></svg>
-                  <span className="text-zinc-500 text-xs">Sans GEO</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <svg width="24" height="2"><line x1="0" y1="1" x2="24" y2="1" stroke="#FF4500" strokeWidth="2.5" /></svg>
-                  <span className="text-white text-xs font-medium">Avec GEO Reddit</span>
-                </div>
-              </div>
-
-              {/* Chart */}
-              <svg viewBox="0 0 600 280" className="w-full" preserveAspectRatio="xMidYMid meet" aria-label="Graphique comparatif GEO vs sans GEO sur 6 mois">
-                <defs>
-                  <linearGradient id="fillGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#FF4500" stopOpacity="0.18" />
-                    <stop offset="100%" stopColor="#FF4500" stopOpacity="0.02" />
-                  </linearGradient>
-                </defs>
-
-                {/* Grid lines */}
-                {[40, 90, 140, 190, 235].map((y) => (
-                  <line key={y} x1="60" y1={y} x2="568" y2={y} stroke="#27272a" strokeWidth="1" strokeDasharray="4,4" />
-                ))}
-
-                {/* Fill area between curves */}
-                <path
-                  d="M 60,230 C 110,221 130,213 160,207 C 200,198 230,185 260,175 C 300,160 330,143 360,132 C 400,115 430,94 460,78 C 500,54 530,34 568,18 L 568,235 C 500,236 430,237 360,237 C 300,237 230,237 160,236 C 130,236 110,235 60,235 Z"
-                  fill="url(#fillGradient)"
-                />
-
-                {/* Sans GEO line — flat, slight decline */}
-                <path
-                  d="M 60,230 C 160,232 260,234 360,236 C 460,237 520,237 568,237"
-                  fill="none"
-                  stroke="#52525b"
-                  strokeWidth="2"
-                  strokeDasharray="6,3"
-                />
-
-                {/* Avec GEO line — exponential */}
-                <path
-                  d="M 60,230 C 110,221 130,213 160,207 C 200,198 230,185 260,175 C 300,160 330,143 360,132 C 400,115 430,94 460,78 C 500,54 530,34 568,18"
-                  fill="none"
-                  stroke="#FF4500"
-                  strokeWidth="2.5"
-                />
-
-                {/* Dots on avec GEO curve */}
-                {([[60,230],[160,207],[260,175],[360,132],[460,78],[568,18]] as [number,number][]).map(([x,y]) => (
-                  <circle key={`${x}`} cx={x} cy={y} r="4" fill="#FF4500" stroke="#111113" strokeWidth="1.5" />
-                ))}
-
-                {/* X axis labels */}
-                {['Mois 1','Mois 2','Mois 3','Mois 4','Mois 5','Mois 6'].map((label, i) => (
-                  <text key={label} x={60 + i * 101.6} y={268} textAnchor="middle" fill="#52525b" fontSize="10" fontFamily="var(--font-geist)">
-                    {label}
-                  </text>
-                ))}
-
-                {/* End labels */}
-                <text x="574" y="22" fill="#FF4500" fontSize="10" fontWeight="bold" fontFamily="var(--font-geist)">+220%</text>
-                <text x="574" y="241" fill="#52525b" fontSize="10" fontFamily="var(--font-geist)">−8%</text>
-
-                {/* Y axis baseline label */}
-                <text x="55" y="234" textAnchor="end" fill="#52525b" fontSize="9" fontFamily="var(--font-geist)">Base</text>
-              </svg>
-
-              {/* Bottom metric + quote */}
-              <div className="mt-6 pt-6 border-t border-[#27272a] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-serif text-4xl text-[#FF4500]">+220%</span>
-                  <span className="text-zinc-400 text-sm max-w-xs">de visibilité dans les LLMs en 6 mois avec une stratégie GEO Reddit active¹²³</span>
-                </div>
-                <p className="font-serif text-base italic text-zinc-500 max-w-xs sm:text-right">
-                  &quot;Vous n&apos;êtes qu&apos;à $5 de changer votre vie et votre business.&quot;
-                </p>
-              </div>
-            </div>
-
-            {/* Sources */}
-            <div className="mt-3 flex flex-col gap-1">
-              <p className="text-[10px] text-zinc-700">¹ SparkToro / Datos.io (2024) — Reddit figure parmi les 3 sources les plus citées par ChatGPT dans les réponses aux requêtes de recommandation de produits B2B.</p>
-              <p className="text-[10px] text-zinc-700">² Semrush (2024) — Les contenus Reddit apparaissent dans plus de 60% des AI Overviews Google sur les requêtes de type SaaS et outils.</p>
-              <p className="text-[10px] text-zinc-700">³ BrightEdge Research (2024) — Le trafic généré par les moteurs IA a progressé de +1 300% en 18 mois ; les marques avec présence Reddit convertissent 2,4× plus.</p>
-            </div>
-          </MotionSection>
-        </div>
-      </section>
-
-      {/* ── 5. WHY NOW — GEO OPPORTUNITY ─────────────────────────────────── */}
-      <section className="bg-[#0a0a0a] dot-grid border-t border-[#1c1c1e] py-24">
-        <div className="max-w-6xl mx-auto px-6">
+      {/* ── 9. PRICING ───────────────────────────────────────────────────── */}
+      <section id="pricing" className="border-t border-white/[0.05] py-24 px-6">
+        <div className="max-w-5xl mx-auto">
           <MotionSection className="text-center mb-14">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-4">
-              The Reddit × AI opportunity
-            </span>
-            <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-              Reddit est devenu le meilleur canal<br className="hidden md:block" /> de croissance pour les SaaS.
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/25 mb-3">Simple pricing</p>
+            <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1]">
+              Profitable from day one.
             </h2>
+            <p className="text-white/35 text-sm mt-3">One customer acquired via Reddit pays for years of Reddhunter.</p>
           </MotionSection>
-          <MotionGrid className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: <TrendingUp size={20} className="text-[#FF4500]" />,
-                title: 'GummySearch a fermé',
-                body: '135 000 utilisateurs sans outil depuis novembre 2025. La demande est là, le concurrent direct est parti.',
-              },
-              {
-                icon: <Globe size={20} className="text-[#FF4500]" />,
-                title: 'Reddit remonte dans les LLMs',
-                body: "ChatGPT, Perplexity, Google AI Overviews — Reddit est sur-indexé. Se positionner maintenant, c'est du compound.",
-              },
-              {
-                icon: <Zap size={20} className="text-[#FF4500]" />,
-                title: 'Aucun concurrent à $5/mo',
-                body: "Aucun outil ne combine Explore + Hunt + IA à ce prix. C'est le créneau le plus sous-exploité du moment.",
-              },
-            ].map((card) => (
-              <MotionGridItem key={card.title} className="bg-[#111113] border border-[#27272a] rounded-xl p-6">
-                <div className="mb-4">{card.icon}</div>
-                <h3 className="text-white font-semibold text-base mb-2">{card.title}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">{card.body}</p>
-              </MotionGridItem>
-            ))}
-          </MotionGrid>
-        </div>
-      </section>
 
-      {/* ── 6. FEATURE: EXPLORE ──────────────────────────────────────────── */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-24 border-t border-[#1c1c1e]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <MotionSection className="lg:col-span-5">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-5">
-              Feature 01 · Explore
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4 leading-tight">
-              Ton feed de posts viraux, automatiquement.
-            </h2>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              Reddhunter scrape toutes les 6 heures les subreddits de ta niche :
-              r/indiehackers, r/SaaS, r/startups et 6 autres. Tu arrives et tu as
-              directement les posts qui ont le plus performé — sans rien faire.
-            </p>
-            <ul className="space-y-2.5 text-sm text-zinc-300">
-              {["Filtres 24h / 7j / 30j", "Score d'upvotes + upvote ratio", "Subreddits personnalisés", "Recherche par mots-clés", "Mise à jour toutes les 6h"].map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <span className="text-[#FF4500] font-bold">✓</span> {f}
-                </li>
-              ))}
-            </ul>
-          </MotionSection>
-          <MotionSection className="lg:col-span-7">
-            <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden shadow-2xl">
-              <WindowChrome title="Explore · Last 7 days" />
-              <PostCard sub="r/indiehackers" subVariant="orange" title="How I built a $10k/mo SaaS by lurking Reddit for 30 days straight"      upvotes="2.1k" comments="203" timeAgo="2d ago" viralScore={96} />
-              <PostCard sub="r/entrepreneur" subVariant="blue"   title="Stop cold emailing. Start commenting. Here's my exact Reddit playbook." upvotes="1.8k" comments="157" timeAgo="3d ago" viralScore={91} />
-              <PostCard sub="r/SaaS"         subVariant="green"  title="I replaced my entire content strategy with 3 Reddit comments per day"   upvotes="1.4k" comments="98"  timeAgo="5d ago" viralScore={88} />
-            </div>
-          </MotionSection>
-        </div>
-      </section>
+          <MotionGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-      {/* ── 7. FEATURE: HUNT ─────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-24 border-t border-[#1c1c1e]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <MotionSection className="lg:col-span-7 order-last lg:order-first">
-            <div className="bg-[#111113] border border-[#27272a] rounded-xl overflow-hidden shadow-2xl">
-              <WindowChrome title="Hunt · Find your audience" />
-              <div className="p-4">
-                <div className="flex gap-2 mb-4">
-                  <input
-                    readOnly
-                    value="ai scheduling tool"
-                    aria-hidden="true"
-                    tabIndex={-1}
-                    className="flex-1 bg-[#0a0a0a] border border-[#27272a] rounded-lg px-3 py-2 text-sm text-zinc-300 cursor-default"
-                  />
-                  <button className="bg-[#FF4500] text-white text-sm font-semibold px-4 py-2 rounded-lg cursor-default">Hunt →</button>
-                </div>
-                {[
-                  { sub: 'r/productivity', members: '2.3M members', activity: 'Très actif' },
-                  { sub: 'r/sideprojects', members: '328k members', activity: 'Actif' },
-                  { sub: 'r/Entrepreneur', members: '1.8M members', activity: 'Très actif' },
-                ].map((r) => (
-                  <div key={r.sub} className="flex items-center justify-between py-3 border-b border-[#1a1a1c] last:border-0">
-                    <div>
-                      <p className="text-white text-sm font-medium">{r.sub}</p>
-                      <p className="text-zinc-500 text-xs">{r.members} · {r.activity}</p>
-                    </div>
-                    <a href="#" className="text-[#FF4500] text-xs font-semibold hover:underline">Go comment →</a>
-                  </div>
-                ))}
+            {/* Pro Monthly */}
+            <MotionGridItem className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6 flex flex-col">
+              <p className="text-white/35 text-xs font-semibold uppercase tracking-widest mb-5">Pro</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-semibold text-white tracking-tight">$5</span>
+                <span className="text-white/30 text-sm">/mo</span>
               </div>
-            </div>
-          </MotionSection>
-          <MotionSection className="lg:col-span-5">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-5">
-              Feature 02 · Hunt
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4 leading-tight">
-              Trouve exactement où est ton audience.
-            </h2>
-            <p className="text-zinc-400 text-sm leading-relaxed mb-6">
-              Entre les mots-clés de ton produit. Reddhunter interroge Reddit en temps réel
-              et te retourne les subreddits les plus actifs avec leurs stats.
-              Un clic pour aller commenter.
-            </p>
-            <ul className="space-y-2.5 text-sm text-zinc-300">
-              {["Recherche temps réel via l'API Reddit", "Nombre de membres + activité", "Top posts récents par subreddit", "Lien direct vers le subreddit"].map((f) => (
-                <li key={f} className="flex items-center gap-2">
-                  <span className="text-[#FF4500] font-bold">✓</span> {f}
-                </li>
-              ))}
-            </ul>
-          </MotionSection>
-        </div>
-      </section>
-
-      {/* ── 8. AI FEATURES ───────────────────────────────────────────────── */}
-      <section className="bg-[#070707] border-t border-[#1c1c1e] py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <MotionSection className="text-center mb-14">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-4">
-              Powered by Claude AI
-            </span>
-            <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-              L&apos;IA qui comprend ce qui performe.
-            </h2>
-          </MotionSection>
-
-          <MotionGrid className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <MotionGridItem className="bg-[#111113] border border-[#27272a] rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="p-2 bg-[rgba(255,69,0,0.1)] rounded-lg">
-                  <BarChart2 size={18} className="text-[#FF4500]" />
-                </div>
-                <h3 className="text-white font-semibold text-base">Viral Score IA</h3>
-              </div>
-              <p className="text-zinc-500 text-sm leading-relaxed mb-6">
-                Chaque post reçoit un score 0–100 avec une explication : pourquoi ça a performé,
-                quel format, quelle accroche. Tu apprends les patterns de ta niche.
-              </p>
-              <div className="bg-[#0a0a0a] border border-[#27272a] rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-zinc-500 text-xs font-medium">Viral Score</span>
-                  <span className="font-serif text-3xl text-[#FF4500]">92/100</span>
-                </div>
-                <div className="w-full bg-[#1c1c1e] rounded-full h-1.5 mb-3">
-                  <div className="bg-[#FF4500] h-1.5 rounded-full" style={{ width: '92%' }} />
-                </div>
-                <p className="text-zinc-600 text-[11px] leading-relaxed">
-                  Format &quot;I did X, here&apos;s what happened&quot; + personal story + actionable data.
-                  Timing optimal (Tuesday 9AM EST). Ratio engagement/views exceptionnel.
-                </p>
-              </div>
-            </MotionGridItem>
-
-            <MotionGridItem className="bg-[#111113] border border-[#27272a] rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="p-2 bg-[rgba(255,69,0,0.1)] rounded-lg">
-                  <MessageSquare size={18} className="text-[#FF4500]" />
-                </div>
-                <h3 className="text-white font-semibold text-base">Comment Starter</h3>
-              </div>
-              <p className="text-zinc-500 text-sm leading-relaxed mb-6">
-                Un clic pour générer un commentaire GEO-optimisé. L&apos;IA analyse le contexte,
-                le ton du subreddit, et positionne ton produit naturellement.
-              </p>
-              <div className="bg-[#0a0a0a] border border-[#27272a] rounded-lg p-4 font-mono text-xs text-zinc-400 leading-relaxed">
-                <span className="text-zinc-600">// Generated comment draft</span>
-                <br /><br />
-                <span className="text-[#4ade80]">Great breakdown.</span>{' '}
-                I&apos;ve been doing something similar with{' '}
-                <span className="text-[#60a5fa]">Reddhunter</span> — it surfaces exactly these
-                kinds of posts automatically so I can jump in early. The{' '}
-                <span className="text-[#FF6B35]">Viral Score</span> feature helped me understand
-                why certain formats crush it here. Have you noticed the &quot;story + data&quot; combo
-                consistently outperforms pure how-to content?
-              </div>
-            </MotionGridItem>
-          </MotionGrid>
-
-          <MotionSection className="text-center">
-            <a href="#" className="inline-block px-6 py-3 text-sm font-semibold border border-white/20 text-white rounded-lg hover:bg-white/5 transition-colors">
-              Essayer gratuitement →
-            </a>
-          </MotionSection>
-        </div>
-      </section>
-
-      {/* ── 9. HOW IT WORKS ──────────────────────────────────────────────── */}
-      <section id="how-it-works" className="max-w-6xl mx-auto px-6 py-24 border-t border-[#1c1c1e]">
-        <MotionSection className="text-center mb-16">
-          <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-4">
-            Simple comme bonjour
-          </span>
-          <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-            Opérationnel en 3 minutes.
-          </h2>
-        </MotionSection>
-        <MotionGrid className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-          <div className="hidden md:block absolute top-10 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px border-t border-dashed border-[#27272a] z-0" />
-          {[
-            { num: '01', icon: <Search size={20} className="text-[#FF4500]" />, title: 'Connecte ta niche',        body: 'Ajoute tes subreddits ou utilise nos 12 subreddits pré-configurés. Setup en 2 minutes.' },
-            { num: '02', icon: <Flame  size={20} className="text-[#FF4500]" />, title: 'Explore les posts viraux', body: 'Filtre par période, upvotes, ratio. Le Viral Score IA classe automatiquement ce qui performe.' },
-            { num: '03', icon: <Send   size={20} className="text-[#FF4500]" />, title: 'Engage et croît',          body: "Génère ton commentaire GEO, copie-colle sur Reddit, et build ta présence qui compound." },
-          ].map((step) => (
-            <MotionGridItem key={step.num} className="bg-[#111113] border border-[#27272a] rounded-xl p-6 relative z-10">
-              <div className="font-serif text-4xl text-[#FF4500] mb-4">{step.num}</div>
-              <div className="mb-3">{step.icon}</div>
-              <h3 className="text-white font-semibold text-base mb-2">{step.title}</h3>
-              <p className="text-zinc-500 text-sm leading-relaxed">{step.body}</p>
-            </MotionGridItem>
-          ))}
-        </MotionGrid>
-      </section>
-
-      {/* ── 10. PRICING ───────────────────────────────────────────────────── */}
-      <section id="pricing" className="bg-[#0a0a0a] dot-grid border-t border-[#1c1c1e] py-24">
-        <div className="max-w-6xl mx-auto px-6">
-          <MotionSection className="text-center mb-14">
-            <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-zinc-500 bg-[#111113] border border-[#27272a] px-3 py-1.5 rounded-full mb-4">
-              Tarification simple
-            </span>
-            <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-              Rentable dès le premier jour.
-            </h2>
-          </MotionSection>
-          <MotionGrid className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <MotionGridItem className="bg-[#111113] border border-[#27272a] rounded-xl p-6 flex flex-col">
-              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-widest mb-4">Free</p>
-              <div className="mb-1"><span className="font-serif text-4xl text-white">$0</span><span className="text-zinc-500 text-sm ml-1">/mois</span></div>
-              <p className="text-zinc-500 text-sm mb-6">Pour tester sans risque</p>
-              <ul className="space-y-2.5 text-sm text-zinc-400 mb-8 flex-1">
-                {["3 recherches Hunt/jour", "Feed de base", "Accès limité IA"].map((f) => (
-                  <li key={f} className="flex items-center gap-2"><Check size={14} className="text-zinc-600 shrink-0" />{f}</li>
-                ))}
-              </ul>
-              <CTALink className="block text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
-                Commencer gratuitement
-              </CTALink>
-            </MotionGridItem>
-
-            <MotionGridItem className="bg-[#0f0a08] border-2 border-[#FF4500] rounded-xl p-6 flex flex-col relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-[#FF4500] text-white text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">Most Popular</span>
-              </div>
-              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-widest mb-4">Pro</p>
-              <div className="mb-1"><span className="font-serif text-4xl text-white">$5</span><span className="text-zinc-500 text-sm ml-1">/mois</span></div>
-              <p className="text-zinc-500 text-xs mb-6">soit $0.17/jour</p>
-              <ul className="space-y-2.5 text-sm text-zinc-300 mb-8 flex-1">
-                {["Hunt illimité", "Explore complet", "Viral Score IA", "Comment Starter IA", "Subreddits personnalisés illimités", "Filtres avancés"].map((f) => (
-                  <li key={f} className="flex items-center gap-2"><Check size={14} className="text-[#FF4500] shrink-0" />{f}</li>
+              <p className="text-white/25 text-xs mb-7">$0.17/day — less than a coffee.</p>
+              <ul className="space-y-2.5 text-xs text-white/50 mb-8 flex-1">
+                {["Unlimited Hunt", "Full Explore feed", "Viral Score AI (20/day)", "Comment Starter (5/day)", "Advanced filters"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check size={12} className="text-[#FF4500]/60 shrink-0" />{f}
+                  </li>
                 ))}
               </ul>
               <CheckoutButton
                 priceId="price_1TJt9DASvSAsZiKVURsmnVg6"
-                className="block w-full text-center py-2.5 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors mb-3 disabled:opacity-60"
+                className="block w-full text-center py-2.5 text-sm font-semibold border border-white/[0.08] text-white/50 rounded-xl hover:border-white/[0.15] hover:text-white/80 transition-all"
               >
-                Démarrer pour $5/mois →
+                Start for $5/mo →
               </CheckoutButton>
-              <p className="text-center text-xs text-zinc-600">✓ Annulation en 1 clic · ✓ Sans engagement</p>
             </MotionGridItem>
 
-            <MotionGridItem className="bg-[#111113] border border-[#27272a] rounded-xl p-6 flex flex-col">
-              <p className="text-zinc-500 text-xs font-semibold uppercase tracking-widest mb-4">Pro Annuel</p>
-              <div className="mb-1"><span className="font-serif text-4xl text-white">$50</span><span className="text-zinc-500 text-sm ml-1">/an</span></div>
-              <p className="text-zinc-500 text-xs mb-6">2 mois offerts — soit $4.17/mois</p>
-              <ul className="space-y-2.5 text-sm text-zinc-400 mb-8 flex-1">
-                {["Hunt illimité", "Explore complet", "Viral Score IA", "Comment Starter IA", "Subreddits personnalisés illimités", "Filtres avancés"].map((f) => (
-                  <li key={f} className="flex items-center gap-2"><Check size={14} className="text-zinc-600 shrink-0" />{f}</li>
+            {/* Pro Annual */}
+            <MotionGridItem className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6 flex flex-col">
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-white/35 text-xs font-semibold uppercase tracking-widest">Pro Annual</p>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-white/[0.06] text-white/40">-17%</span>
+              </div>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-semibold text-white tracking-tight">$50</span>
+                <span className="text-white/30 text-sm">/yr</span>
+              </div>
+              <p className="text-white/25 text-xs mb-7">2 months free — $4.17/month.</p>
+              <ul className="space-y-2.5 text-xs text-white/50 mb-8 flex-1">
+                {["Everything in Pro", "2 months free"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check size={12} className="text-[#FF4500]/60 shrink-0" />{f}
+                  </li>
                 ))}
               </ul>
               <CheckoutButton
                 priceId="price_1TJt9DASvSAsZiKVi9yVM5EO"
-                className="block w-full text-center py-2.5 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors disabled:opacity-60"
+                className="block w-full text-center py-2.5 text-sm font-semibold border border-white/[0.08] text-white/50 rounded-xl hover:border-white/[0.15] hover:text-white/80 transition-all"
               >
-                Démarrer pour $50/an →
+                Save 2 months →
               </CheckoutButton>
             </MotionGridItem>
+
+            {/* Pro AI — MOST POPULAR */}
+            <MotionGridItem className="relative bg-[#0d0906] border border-[#FF4500]/40 rounded-2xl p-6 flex flex-col shadow-[0_0_60px_rgba(255,69,0,0.12)] animate-glow-pulse">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="bg-[#FF4500] text-white text-[10px] font-bold px-3 py-1 rounded-full tracking-wider">BEST VALUE</span>
+              </div>
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-[#FF4500]/70 text-xs font-semibold uppercase tracking-widest">Pro AI</p>
+                <Sparkles size={12} className="text-[#FF4500]/50" />
+              </div>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-semibold text-white tracking-tight">$15</span>
+                <span className="text-white/30 text-sm">/mo</span>
+              </div>
+              <p className="text-white/25 text-xs mb-7">Full AI stack — $0.50/day.</p>
+              <ul className="space-y-2.5 text-xs text-white/70 mb-8 flex-1">
+                {[
+                  "Everything in Pro",
+                  "IA Lab (posts recommandés)",
+                  "Viral Score illimité",
+                  "Comment Starter (50/day)",
+                  "Business profile IA",
+                  "Recommandations hebdo",
+                ].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check size={12} className="text-[#FF4500] shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <CheckoutButton
+                priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_AI_MONTHLY ?? 'price_REPLACE_WITH_AI_MONTHLY'}
+                className="block w-full text-center py-2.5 text-sm font-bold bg-[#FF4500] hover:bg-[#e63d00] text-white rounded-xl transition-all mb-3 hover:shadow-[0_0_20px_rgba(255,69,0,0.4)]"
+              >
+                Start Pro AI →
+              </CheckoutButton>
+              <p className="text-center text-[10px] text-white/20">Cancel anytime · No commitment</p>
+            </MotionGridItem>
+
+            {/* Pro AI Annual */}
+            <MotionGridItem className="bg-[#0a0806] border border-[#FF4500]/20 rounded-2xl p-6 flex flex-col">
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-[#FF4500]/50 text-xs font-semibold uppercase tracking-widest">Pro AI Annual</p>
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-[#FF4500]/10 text-[#FF4500]/60">-33%</span>
+              </div>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-4xl font-semibold text-white tracking-tight">$120</span>
+                <span className="text-white/30 text-sm">/yr</span>
+              </div>
+              <p className="text-white/25 text-xs mb-7">$10/month — save $60/year.</p>
+              <ul className="space-y-2.5 text-xs text-white/50 mb-8 flex-1">
+                {["Everything in Pro AI", "2 months free", "Priority support"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <Check size={12} className="text-[#FF4500]/50 shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <CheckoutButton
+                priceId={process.env.NEXT_PUBLIC_STRIPE_PRICE_AI_ANNUAL ?? 'price_REPLACE_WITH_AI_ANNUAL'}
+                className="block w-full text-center py-2.5 text-sm font-semibold border border-[#FF4500]/25 text-[#FF4500]/60 rounded-xl hover:border-[#FF4500]/50 hover:text-[#FF4500] transition-all"
+              >
+                Save $60/year →
+              </CheckoutButton>
+            </MotionGridItem>
+
           </MotionGrid>
         </div>
       </section>
 
-      {/* ── 11. FAQ ───────────────────────────────────────────────────────── */}
-      <section id="faq" className="max-w-4xl mx-auto px-6 py-24 border-t border-[#1c1c1e]">
-        <MotionSection className="text-center mb-12">
-          <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight">
-            Questions fréquentes
-          </h2>
-        </MotionSection>
-        <MotionSection>
-          <FaqAccordion />
-        </MotionSection>
-      </section>
-
-      {/* ── 12. CTA FINAL ─────────────────────────────────────────────────── */}
-      <section className="bg-[#0a0a0a] border-t border-[#1c1c1e] py-24">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <MotionSection>
-            <h2 className="font-serif text-4xl md:text-[42px] text-white leading-tight mb-4">
-              Commence à construire ta présence<br className="hidden md:block" /> Reddit aujourd&apos;hui.
+      {/* ── 10. FAQ ──────────────────────────────────────────────────────── */}
+      <section id="faq" className="border-t border-white/[0.05] py-24 px-6">
+        <div className="max-w-2xl mx-auto">
+          <MotionSection className="text-center mb-12">
+            <h2 className="text-[clamp(1.8rem,4vw,2.8rem)] font-semibold tracking-[-0.025em] text-white leading-[1.1]">
+              Common questions.
             </h2>
-            <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-xl mx-auto">
-              Rejoins les founders qui utilisent Reddhunter pour trouver et engager
-              leur audience — en moins de 5 minutes.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
-              <CTALink className="px-6 py-3 text-sm font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-lg transition-colors">
-                Démarrer gratuitement →
-              </CTALink>
-              <CTALink className="px-6 py-3 text-sm font-semibold border border-[#3f3f46] text-zinc-300 rounded-lg hover:border-zinc-400 hover:text-white transition-colors">
-                2 mois offert
-              </CTALink>
-            </div>
-            <p className="text-xs text-zinc-600 mb-16">3 recherches gratuites par jour · Sans carte bancaire</p>
           </MotionSection>
-          <div className="overflow-hidden">
-            <div className="flex gap-3 animate-marquee whitespace-nowrap w-max">
-              {[...SUBREDDITS, ...SUBREDDITS].map((sub, i) => (
-                <span key={i} className="bg-[#111113] border border-[#27272a] text-zinc-500 text-xs font-medium px-3 py-1.5 rounded-full">
-                  {sub}
-                </span>
-              ))}
-            </div>
-          </div>
+          <MotionSection><FaqAccordion /></MotionSection>
         </div>
       </section>
 
-      {/* ── 13. FOOTER ────────────────────────────────────────────────────── */}
-      <footer className="border-t border-[#1c1c1e] py-12 bg-[#0a0a0a]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
-            <div>
-              <div className="flex items-center gap-2 font-bold text-white text-base mb-3">
-                <Logo size={24} /> Reddhunter
+      {/* ── 11. FINAL CTA ────────────────────────────────────────────────── */}
+      <section className="border-t border-white/[0.05] py-32 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,rgba(255,69,0,0.07),transparent)] pointer-events-none" />
+        <div className="max-w-2xl mx-auto text-center relative">
+          <MotionSection>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#FF4500]/60 mb-5">Start today</p>
+            <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-semibold tracking-[-0.03em] text-white leading-[1.05] mb-5">
+              Your audience is on Reddit.<br className="hidden sm:block" /> Go find them.
+            </h2>
+            <p className="text-white/35 text-base mb-10 leading-relaxed">
+              Join founders who use Reddhunter to find and engage their audience in under 5 minutes.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-5">
+              <CTALink
+                shine
+                className="flex items-center gap-2 px-7 py-3 text-base font-semibold bg-[#FF4500] hover:bg-[#e63d00] text-white rounded-xl transition-all hover:shadow-[0_0_36px_rgba(255,69,0,0.45)]"
+              >
+                Start for free <ArrowRight size={16} />
+              </CTALink>
+              <CTALink className="flex items-center gap-2 px-7 py-3 text-base font-medium border border-white/[0.08] text-white/50 rounded-xl hover:border-white/[0.15] hover:text-white/70 transition-all">
+                2 months free →
+              </CTALink>
+            </div>
+            <p className="text-xs text-white/20">3 free searches per day · No credit card required</p>
+          </MotionSection>
+        </div>
+      </section>
+
+      {/* ── 12. FOOTER ───────────────────────────────────────────────────── */}
+      <footer className="border-t border-white/[0.05] py-12 px-6 bg-[#07080a]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 font-semibold text-white text-sm mb-3">
+                <Logo size={22} />
+                <span className="tracking-tight">Reddhunter</span>
               </div>
-              <p className="text-zinc-600 text-sm leading-relaxed">Reddit intelligence for founders and indie hackers.</p>
+              <p className="text-white/25 text-xs leading-relaxed">Reddit intelligence for founders and indie hackers.</p>
             </div>
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-widest mb-4">Produit</p>
-              <ul className="space-y-2.5 text-sm text-zinc-600">
+              <p className="text-white/25 text-[10px] font-semibold uppercase tracking-[0.14em] mb-4">Product</p>
+              <ul className="space-y-2.5 text-xs text-white/25">
                 {['Features', 'Pricing', 'Changelog'].map((l) => (
-                  <li key={l}><a href="#" className="hover:text-zinc-300 transition-colors">{l}</a></li>
+                  <li key={l}><a href="#" className="hover:text-white/60 transition-colors">{l}</a></li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-widest mb-4">Ressources</p>
-              <ul className="space-y-2.5 text-sm text-zinc-600">
+              <p className="text-white/25 text-[10px] font-semibold uppercase tracking-[0.14em] mb-4">Resources</p>
+              <ul className="space-y-2.5 text-xs text-white/25">
                 {['Blog', 'Subreddits Guide', 'GEO Guide'].map((l) => (
-                  <li key={l}><a href="#" className="hover:text-zinc-300 transition-colors">{l}</a></li>
+                  <li key={l}><a href="#" className="hover:text-white/60 transition-colors">{l}</a></li>
                 ))}
               </ul>
             </div>
             <div>
-              <p className="text-zinc-400 text-xs font-semibold uppercase tracking-widest mb-4">Contact</p>
-              <ul className="space-y-2.5 text-sm text-zinc-600">
-                <li>
-                  <a href="https://x.com/reddhunter_io" className="hover:text-zinc-300 transition-colors flex items-center gap-2">
-                    <Twitter size={14} /> Twitter / X
-                  </a>
-                </li>
-                <li>
-                  <a href="mailto:hello@reddhunter.io" className="hover:text-zinc-300 transition-colors flex items-center gap-2">
-                    <Mail size={14} /> hello@reddhunter.io
-                  </a>
-                </li>
+              <p className="text-white/25 text-[10px] font-semibold uppercase tracking-[0.14em] mb-4">Contact</p>
+              <ul className="space-y-2.5 text-xs text-white/25">
+                <li><a href="https://x.com/reddhunter_io" className="hover:text-white/60 transition-colors flex items-center gap-2"><Twitter size={11} /> Twitter / X</a></li>
+                <li><a href="mailto:hello@reddhunter.io" className="hover:text-white/60 transition-colors flex items-center gap-2"><Mail size={11} /> hello@reddhunter.io</a></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-[#1c1c1e] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-zinc-600 text-xs">© 2026 Reddhunter.io — Built in public 🚀</p>
-            <p className="text-zinc-700 text-xs">Made for founders who build on Reddit</p>
+          <div className="border-t border-white/[0.05] pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-white/15 text-xs">© 2026 Reddhunter.io — Built in public</p>
+            <p className="text-white/10 text-xs">Made for founders who build on Reddit</p>
           </div>
         </div>
       </footer>

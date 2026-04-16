@@ -40,26 +40,32 @@ export function AnimatedCounters() {
 
   return (
     <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center">
-        <div className="font-serif text-5xl text-[#FF4500] mb-3">
-          {triggered ? `${count135}k+` : '0'}
+
+      <div className="relative bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center overflow-hidden group hover:border-[#3f3f46] transition-colors duration-300">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FF4500]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="font-serif text-5xl mb-3 tabular-nums" style={{ color: '#FF4500' }}>
+          {triggered ? `${count135}k+` : '0k+'}
         </div>
         <p className="text-[#52525b] text-sm leading-relaxed">
           utilisateurs laissés orphelins par GummySearch
         </p>
       </div>
-      <div className="bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center">
-        <div className="font-serif text-5xl text-[#FF4500] mb-3">
+
+      <div className="relative bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center overflow-hidden group hover:border-[#3f3f46] transition-colors duration-300">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FF4500]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="font-serif text-5xl mb-3 tabular-nums" style={{ color: '#FF4500' }}>
           {triggered ? `${count6}h` : '0h'}
         </div>
         <p className="text-[#52525b] text-sm leading-relaxed">
           fréquence de mise à jour des posts
         </p>
       </div>
-      <div className="bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center">
+
+      <div className="relative bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center overflow-hidden group hover:border-[#3f3f46] transition-colors duration-300">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FF4500]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         <div
-          className="font-serif text-5xl text-[#FF4500] mb-3 transition-opacity duration-700"
-          style={{ opacity: triggered ? 1 : 0 }}
+          className="font-serif text-5xl mb-3 transition-all duration-700 tabular-nums"
+          style={{ color: '#FF4500', opacity: triggered ? 1 : 0, transform: triggered ? 'translateY(0)' : 'translateY(8px)' }}
         >
           $5/mo
         </div>
@@ -67,6 +73,7 @@ export function AnimatedCounters() {
           pour remplacer des heures de veille manuelle
         </p>
       </div>
+
     </div>
   )
 }

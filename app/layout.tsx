@@ -34,7 +34,7 @@ export default function RootLayout({
       lang="fr"
       className={cn('dark', geist.variable, instrumentSerif.variable)}
     >
-      <body className="bg-[#0a0a0a] text-white antialiased font-sans">
+      <body className="bg-[#07080a] text-white antialiased font-sans">
         <ClerkProvider>{children}</ClerkProvider>
       </body>
     </html>

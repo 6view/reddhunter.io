@@ -11,11 +11,19 @@ model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   email     String   @unique
-  plan                 Plan     @default(FREE)
+  plan                 Plan     @default(PRO)
   stripeCustomerId     String?
   stripeSubscriptionId String?
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  // Business profile (used to personalize AI features)
+  businessName        String?
+  businessUrl         String?
+  businessDescription String?
+  targetAudience      String?
+  keywords            String?
+  tone                String?  @default("neutral")
 
   savedPosts   SavedPost[]
   followedSubs FollowedSubreddit[]
@@ -23,9 +31,10 @@ model User {
 }
 
 enum Plan {
-  FREE
   PRO
   PRO_ANNUAL
+  PRO_AI
+  PRO_AI_ANNUAL
 }
 
 model SavedPost {

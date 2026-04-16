@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { stripe } from '@/lib/stripe'
+import { stripe, isAIPriceId, isAnnualPriceId } from '@/lib/stripe'
 import { prisma } from '@/lib/prisma'
 import type Stripe from 'stripe'
 
@@ -19,11 +19,20 @@ export async function POST(req: Request) {
     const userId = session.metadata?.userId
     if (userId) {
       const sub = await stripe.subscriptions.retrieve(session.subscription as string)
-      const interval = sub.items.data[0]?.plan.interval
+      const priceId = sub.items.data[0]?.price.id ?? ''
+      const isAI = isAIPriceId(priceId)
+      const isAnnual = isAnnualPriceId(priceId)
+
+      let plan: 'PRO' | 'PRO_ANNUAL' | 'PRO_AI' | 'PRO_AI_ANNUAL'
+      if (isAI && isAnnual) plan = 'PRO_AI_ANNUAL'
+      else if (isAI) plan = 'PRO_AI'
+      else if (isAnnual) plan = 'PRO_ANNUAL'
+      else plan = 'PRO'
+
       await prisma.user.update({
         where: { id: userId },
         data: {
-          plan: interval === 'year' ? 'PRO_ANNUAL' : 'PRO',
+          plan,
           stripeCustomerId: session.customer as string,
           stripeSubscriptionId: session.subscription as string,
         },
@@ -33,9 +42,10 @@ export async function POST(req: Request) {
 
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as Stripe.Subscription
+    // Downgrade to base PRO (no free plan anymore)
     await prisma.user.updateMany({
       where: { stripeSubscriptionId: sub.id },
-      data: { plan: 'FREE', stripeSubscriptionId: null },
+      data: { plan: 'PRO', stripeSubscriptionId: null },
     })
   }
 
