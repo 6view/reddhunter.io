@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { Bookmark, ExternalLink, Zap, ChevronDown, ArrowUp, ArrowDown, Search } from 'lucide-react'
+import { Bookmark, ExternalLink, Zap, ChevronDown, ArrowUp, ArrowDown, Search, X, CheckCircle, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import type { RedditPost, ScrapeResult } from '@/scraper/types'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -36,20 +37,26 @@ function subColor(sub: string) { return SUB_COLORS[sub] ?? '#52525b' }
 type ScoreState =
   | { status: 'idle' }
   | { status: 'loading' }
-  | { status: 'done'; score: number; reason: string }
+  | { status: 'done'; score: number; reason: string; remaining: number | null; limit: number | null }
+  | { status: 'rate_limit'; message: string; plan: string }
   | { status: 'error' }
 
 function ViralBtn({ state, onClick }: { state: ScoreState; onClick: () => void }) {
   if (state.status === 'done') {
     const color = state.score >= 80 ? '#FF4500' : state.score >= 60 ? '#FF8040' : '#52525b'
     return (
-      <span
-        className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border cursor-default"
-        style={{ color, borderColor: `${color}40`, backgroundColor: `${color}12` }}
-        title={state.reason}
-      >
-        <Zap size={10} fill={color} /> {state.score}/100
-      </span>
+      <div className="flex items-center gap-2">
+        <span
+          className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border cursor-default"
+          style={{ color, borderColor: `${color}40`, backgroundColor: `${color}12` }}
+          title={state.reason}
+        >
+          <Zap size={10} fill={color} /> {state.score}/100
+        </span>
+        {state.remaining !== null && state.limit !== null && (
+          <span className="text-[10px] text-zinc-700">{state.remaining}/{state.limit} restants</span>
+        )}
+      </div>
     )
   }
   if (state.status === 'loading') {
@@ -57,6 +64,16 @@ function ViralBtn({ state, onClick }: { state: ScoreState; onClick: () => void }
       <span className="flex items-center gap-1 px-2.5 py-1 text-[11px] text-zinc-600">
         <Zap size={10} className="animate-pulse text-[#FF4500]" /> Analyse…
       </span>
+    )
+  }
+  if (state.status === 'rate_limit') {
+    return (
+      <Link href="/#pricing"
+        className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium text-[#FF4500] bg-[#FF4500]/10 border border-[#FF4500]/20 hover:bg-[#FF4500]/20 transition-all"
+        title={state.message}
+      >
+        <TrendingUp size={10} /> Limite atteinte — Upgrade
+      </Link>
     )
   }
   return (
@@ -97,9 +114,13 @@ function PostCard({ post, isFav, onToggleFav }: {
           subreddit: post.subreddit, selftext: post.selftext,
         }),
       })
+      const data = await res.json()
+      if (res.status === 429) {
+        setScore({ status: 'rate_limit', message: data.message, plan: data.plan ?? '' })
+        return
+      }
       if (!res.ok) throw new Error()
-      const data = await res.json() as { score: number; reason: string }
-      setScore({ status: 'done', score: data.score, reason: data.reason })
+      setScore({ status: 'done', score: data.score, reason: data.reason, remaining: data.remaining ?? null, limit: data.limit ?? null })
     } catch {
       setScore({ status: 'error' })
     }
@@ -222,12 +243,22 @@ function filterByTime(posts: RedditPost[], tf: TimeFilter): RedditPost[] {
 
 export function ExploreFeed({ data }: { data: ScrapeResult }) {
   const allSubs = data.subreddits
+  const searchParams = useSearchParams()
 
-  const [timeFilt, setTimeFilt]     = useState<TimeFilter>('all')
-  const [activeSubs, setActiveSubs] = useState<Set<string>>(new Set(['all']))
-  const [favorites, setFavorites]   = useState<Set<string>>(new Set())
-  const [page, setPage]             = useState(1)
-  const [search, setSearch]         = useState('')
+  const [timeFilt, setTimeFilt]       = useState<TimeFilter>('all')
+  const [activeSubs, setActiveSubs]   = useState<Set<string>>(new Set(['all']))
+  const [favorites, setFavorites]     = useState<Set<string>>(new Set())
+  const [page, setPage]               = useState(1)
+  const [search, setSearch]           = useState('')
+  const [showUpgradedBanner, setShowUpgradedBanner] = useState(false)
+
+  useEffect(() => {
+    if (searchParams.get('upgraded') === '1') {
+      setShowUpgradedBanner(true)
+      // clean URL without reload
+      window.history.replaceState({}, '', '/dashboard/explore')
+    }
+  }, [searchParams])
 
   useEffect(() => {
     fetch('/api/saved')
@@ -281,6 +312,20 @@ export function ExploreFeed({ data }: { data: ScrapeResult }) {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
+
+      {/* Upgrade success banner */}
+      {showUpgradedBanner && (
+        <div className="mb-6 flex items-center gap-3 px-4 py-3.5 rounded-xl border border-[#46d160]/25 bg-[#46d160]/[0.06]">
+          <CheckCircle size={15} className="text-[#46d160] flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-[13px] font-semibold text-[#46d160]">Upgrade réussi !</p>
+            <p className="text-[11px] text-zinc-600">Ton plan a été activé. Toutes tes nouvelles features sont disponibles.</p>
+          </div>
+          <button onClick={() => setShowUpgradedBanner(false)} className="text-zinc-700 hover:text-zinc-400 transition-colors">
+            <X size={13} />
+          </button>
+        </div>
+      )}
 
       {/* Header */}
       <div className="mb-8">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { Search, X, ArrowUp, ArrowDown, ExternalLink, Bookmark, Zap, ChevronDown } from 'lucide-react'
+import { Search, X, ArrowUp, ArrowDown, ExternalLink, Bookmark, Zap, ChevronDown, Plus, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 import type { RedditPost, ScrapeResult } from '@/scraper/types'
 
@@ -31,22 +31,34 @@ function highlight(text: string, query: string): React.ReactNode {
   )
 }
 
-type ScoreState = { status: 'idle' } | { status: 'loading' } | { status: 'done'; score: number; reason: string } | { status: 'error' }
+type ScoreState = { status: 'idle' } | { status: 'loading' } | { status: 'done'; score: number; reason: string; remaining: number | null; limit: number | null } | { status: 'rate_limit'; message: string } | { status: 'error' }
 
 function ViralBtn({ state, onClick }: { state: ScoreState; onClick: () => void }) {
   if (state.status === 'done') {
     const color = state.score >= 80 ? '#FF4500' : state.score >= 60 ? '#FF8040' : '#52525b'
     return (
-      <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border cursor-default"
-        style={{ color, borderColor: `${color}40`, backgroundColor: `${color}12` }} title={state.reason}>
-        <Zap size={10} fill={color} /> {state.score}/100
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border cursor-default"
+          style={{ color, borderColor: `${color}40`, backgroundColor: `${color}12` }} title={state.reason}>
+          <Zap size={10} fill={color} /> {state.score}/100
+        </span>
+        {state.remaining !== null && state.limit !== null && (
+          <span className="text-[10px] text-zinc-700">{state.remaining}/{state.limit} restants</span>
+        )}
+      </div>
     )
   }
   if (state.status === 'loading') return (
     <span className="flex items-center gap-1 px-2.5 py-1 text-[11px] text-zinc-600">
       <Zap size={10} className="animate-pulse text-[#FF4500]" /> Analyse…
     </span>
+  )
+  if (state.status === 'rate_limit') return (
+    <Link href="/#pricing"
+      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium text-[#FF4500] bg-[#FF4500]/10 border border-[#FF4500]/20 hover:bg-[#FF4500]/20 transition-all"
+      title={state.message}>
+      <TrendingUp size={10} /> Limite — Upgrade
+    </Link>
   )
   return (
     <button onClick={onClick}
@@ -76,9 +88,10 @@ function PostCard({ post, query, isFav, onToggleFav }: {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: post.title, score: post.score, num_comments: post.num_comments, upvote_ratio: post.upvote_ratio, subreddit: post.subreddit, selftext: post.selftext }),
       })
+      const data = await res.json()
+      if (res.status === 429) { setScore({ status: 'rate_limit', message: data.message }); return }
       if (!res.ok) throw new Error()
-      const data = await res.json() as { score: number; reason: string }
-      setScore({ status: 'done', score: data.score, reason: data.reason })
+      setScore({ status: 'done', score: data.score, reason: data.reason, remaining: data.remaining ?? null, limit: data.limit ?? null })
     } catch { setScore({ status: 'error' }) }
   }
 
@@ -163,16 +176,32 @@ const SUGGESTIONS = ['AI tool','SaaS pricing','landing page','churn rate','cold 
 const PAGE_SIZE = 20
 
 export function HuntFeed({ data }: { data: ScrapeResult }) {
-  const [query, setQuery]         = useState('')
-  const [submitted, setSubmitted] = useState('')
-  const [favorites, setFavorites] = useState<Set<string>>(new Set())
-  const [page, setPage]           = useState(1)
+  const [query, setQuery]               = useState('')
+  const [submitted, setSubmitted]       = useState('')
+  const [favorites, setFavorites]       = useState<Set<string>>(new Set())
+  const [page, setPage]                 = useState(1)
+  const [followedSubs, setFollowedSubs] = useState<string[]>([])
+  const [newSub, setNewSub]             = useState('')
 
   const topKeywords = useMemo(() => computeTopKeywords(data.posts), [data.posts])
 
   useEffect(() => {
     fetch('/api/saved').then(r => r.ok ? r.json() : []).then((ids: string[]) => setFavorites(new Set(ids))).catch(() => {})
+    fetch('/api/subreddits').then(r => r.ok ? r.json() : []).then((subs: string[]) => setFollowedSubs(subs)).catch(() => {})
   }, [])
+
+  async function addSub() {
+    const name = newSub.trim().replace(/^r\//, '')
+    if (!name) return
+    await fetch('/api/subreddits', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
+    setFollowedSubs(prev => prev.includes(name) ? prev : [name, ...prev])
+    setNewSub('')
+  }
+
+  async function removeSub(name: string) {
+    await fetch('/api/subreddits', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
+    setFollowedSubs(prev => prev.filter(s => s !== name))
+  }
 
   const toggleFav = useCallback(async (post: RedditPost) => {
     setFavorites(prev => { const next = new Set(prev); next.has(post.id) ? next.delete(post.id) : next.add(post.id); return next })
@@ -235,6 +264,45 @@ export function HuntFeed({ data }: { data: ScrapeResult }) {
       {/* Default state */}
       {!submitted && (
         <div className="flex flex-col gap-7">
+
+          {/* Subreddits suivis */}
+          <div>
+            <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-semibold mb-3">Subreddits suivis</p>
+            <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] p-4 flex flex-col gap-3">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newSub}
+                  onChange={e => setNewSub(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && addSub()}
+                  placeholder="r/indiehackers, SaaS…"
+                  className="flex-1 bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-2 text-[12px] text-zinc-300 placeholder-zinc-700 focus:outline-none focus:border-[#FF4500]/40 transition-all"
+                />
+                <button
+                  onClick={addSub}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#FF4500]/15 hover:bg-[#FF4500]/25 text-[#FF4500] text-[12px] font-semibold transition-all border border-[#FF4500]/20"
+                >
+                  <Plus size={12} /> Suivre
+                </button>
+              </div>
+              {followedSubs.length > 0 ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {followedSubs.map(sub => (
+                    <span key={sub} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border border-white/[0.10] bg-white/[0.03] text-zinc-400">
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: SUB_COLORS[sub] ?? '#52525b' }} />
+                      r/{sub}
+                      <button onClick={() => removeSub(sub)} className="text-zinc-700 hover:text-zinc-400 ml-0.5 transition-colors">
+                        <X size={10} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-[11px] text-zinc-700">Aucun subreddit suivi pour l&apos;instant.</p>
+              )}
+            </div>
+          </div>
+
           <div>
             <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-semibold mb-3">Suggestions</p>
             <div className="flex flex-wrap gap-2">

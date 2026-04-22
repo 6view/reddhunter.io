@@ -11,7 +11,7 @@ model User {
   id        String   @id @default(cuid())
   clerkId   String   @unique
   email     String   @unique
-  plan                 Plan     @default(PRO)
+  plan                 Plan     @default(FREE)
   stripeCustomerId     String?
   stripeSubscriptionId String?
   createdAt            DateTime @default(now())
@@ -31,6 +31,7 @@ model User {
 }
 
 enum Plan {
+  FREE
   PRO
   PRO_ANNUAL
   PRO_AI

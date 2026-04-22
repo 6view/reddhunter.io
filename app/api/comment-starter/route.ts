@@ -24,6 +24,8 @@ export async function POST(req: NextRequest) {
     let productDesc = ''
     let targetAudience = ''
     let tone = 'neutral'
+    let remaining: number | null = null
+    let usageLimit: number | null = null
 
     const { userId: clerkId } = auth()
     if (clerkId) {
@@ -36,10 +38,17 @@ export async function POST(req: NextRequest) {
         if (!allowed) {
           return NextResponse.json({
             error: 'rate_limit',
-            message: `Limite atteinte (${used}/${limit} aujourd'hui). Upgrade vers Pro AI pour plus de commentaires.`,
+            used,
+            limit,
+            plan: user.plan,
+            message: limit === 1
+              ? `Limite atteinte (${used}/${limit} aujourd'hui). Passez à Pro pour 5 commentaires/jour.`
+              : `Limite atteinte (${used}/${limit} aujourd'hui). Upgrade vers Pro AI pour 50 commentaires/jour.`,
           }, { status: 429 })
         }
         await incrementUsage(user.id, 'commentStarter')
+        remaining = isFinite(limit) ? Math.max(0, limit - used - 1) : null
+        usageLimit = isFinite(limit) ? limit : null
         if (user.businessName) productName = user.businessName
         if (user.businessDescription) productDesc = user.businessDescription
         if (user.targetAudience) targetAudience = user.targetAudience
@@ -91,7 +100,7 @@ Respond ONLY with valid JSON, no markdown:
     const jsonStr = text.replace(/^```json?\n?/, '').replace(/\n?```$/, '').trim()
     const result = JSON.parse(jsonStr)
 
-    return NextResponse.json(result)
+    return NextResponse.json({ ...result, remaining, limit: usageLimit })
   } catch (err) {
     console.error('[comment-starter]', err)
     return NextResponse.json({ error: 'Génération échouée' }, { status: 500 })

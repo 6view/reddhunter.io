@@ -13,6 +13,7 @@ async function getUserPlan() {
 }
 
 const PLAN_LABELS: Record<string, { label: string; color: string }> = {
+  FREE:         { label: 'Free',       color: '#52525b' },
   PRO:          { label: 'Pro',        color: '#FF4500' },
   PRO_ANNUAL:   { label: 'Pro Annual', color: '#FF4500' },
   PRO_AI:       { label: 'Pro AI',     color: '#a855f7' },
@@ -30,7 +31,8 @@ const NAV = [
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const plan = await getUserPlan()
   const planInfo = plan ? PLAN_LABELS[plan] : null
-  const isAI = plan === 'PRO_AI' || plan === 'PRO_AI_ANNUAL'
+  const isAI   = plan === 'PRO_AI' || plan === 'PRO_AI_ANNUAL'
+  const isFree = plan === 'FREE'
   return (
     <div className="flex min-h-screen bg-[#0a0a0a]">
 
@@ -78,7 +80,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-[12px] font-semibold text-zinc-300 truncate">{planInfo.label}</p>
-                {!isAI && (
+                {isFree && (
+                  <Link href="/#pricing" className="text-[10px] text-[#FF4500]/70 hover:text-[#FF4500] transition-colors">
+                    Passer à Pro →
+                  </Link>
+                )}
+                {!isAI && !isFree && (
                   <Link href="/#pricing" className="text-[10px] text-[#FF4500]/70 hover:text-[#FF4500] transition-colors">
                     Upgrade to Pro AI →
                   </Link>
