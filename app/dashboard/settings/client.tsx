@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import {
   Sparkles, Globe, Users, Tag, MessageSquare,
-  Check, Loader2, ChevronRight, Building2, Zap
+  Check, Loader2, ChevronRight, Building2, Zap,
+  CreditCard, ExternalLink, Shield
 } from 'lucide-react'
 
 type Profile = {
@@ -13,6 +14,13 @@ type Profile = {
   targetAudience: string
   keywords: string
   tone: string
+}
+
+const PLAN_LABELS: Record<string, { label: string; color: string; desc: string }> = {
+  PRO:           { label: 'Pro',         color: 'text-[#FF4500]',  desc: '5€/mois · Viral Score 20/j, Comment Starter 5/j' },
+  PRO_ANNUAL:    { label: 'Pro Annual',  color: 'text-[#FF4500]',  desc: '50€/an · 2 mois offerts' },
+  PRO_AI:        { label: 'Pro AI',      color: 'text-[#0dd3bb]',  desc: '15€/mois · IA illimitée + IA Lab' },
+  PRO_AI_ANNUAL: { label: 'Pro AI Annual', color: 'text-[#0dd3bb]', desc: '120€/an · 2 mois offerts' },
 }
 
 const TONES = [
@@ -52,22 +60,36 @@ export function SettingsClient() {
     tone: 'neutral',
   })
 
-  const [loading, setLoading]   = useState(true)
-  const [saving, setSaving]     = useState(false)
-  const [saved, setSaved]       = useState(false)
-  const [filled, setFilled]     = useState(false)
+  const [loading, setLoading]       = useState(true)
+  const [saving, setSaving]         = useState(false)
+  const [saved, setSaved]           = useState(false)
+  const [filled, setFilled]         = useState(false)
+  const [plan, setPlan]             = useState<string | null>(null)
+  const [portalLoading, setPortalLoading] = useState(false)
 
   useEffect(() => {
-    fetch('/api/profile')
-      .then(r => r.json())
-      .then((data: Partial<Profile>) => {
-        if (data) {
-          setProfile(p => ({ ...p, ...data }))
-          setFilled(!!data.businessName)
-        }
-      })
-      .finally(() => setLoading(false))
+    Promise.all([
+      fetch('/api/profile').then(r => r.json()),
+      fetch('/api/user').then(r => r.json()),
+    ]).then(([profileData, userData]: [Partial<Profile>, { plan?: string }]) => {
+      if (profileData) {
+        setProfile(p => ({ ...p, ...profileData }))
+        setFilled(!!profileData.businessName)
+      }
+      if (userData?.plan) setPlan(userData.plan)
+    }).finally(() => setLoading(false))
   }, [])
+
+  async function handlePortal() {
+    setPortalLoading(true)
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      const { url } = await res.json()
+      if (url) window.location.href = url
+    } finally {
+      setPortalLoading(false)
+    }
+  }
 
   function update(key: keyof Profile, value: string) {
     setProfile(p => ({ ...p, [key]: value }))
@@ -123,6 +145,39 @@ export function SettingsClient() {
             Ces infos permettent à Claude de personnaliser chaque analyse et commentaire à ton produit.
           </p>
         </div>
+
+        {/* Subscription section */}
+        {plan && (
+          <div className="mb-8 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-6">
+            <div className="flex items-center gap-2 pb-4 border-b border-white/[0.05] mb-5">
+              <CreditCard size={14} className="text-[#FFB300]" />
+              <h2 className="text-[13px] font-semibold text-zinc-300">Abonnement</h2>
+            </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <Shield size={12} className={PLAN_LABELS[plan]?.color ?? 'text-zinc-400'} />
+                  <span className={`text-[13px] font-semibold ${PLAN_LABELS[plan]?.color ?? 'text-zinc-400'}`}>
+                    {PLAN_LABELS[plan]?.label ?? plan}
+                  </span>
+                </div>
+                <p className="text-[11px] text-zinc-600">{PLAN_LABELS[plan]?.desc}</p>
+              </div>
+              <button
+                onClick={handlePortal}
+                disabled={portalLoading}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/[0.10] bg-white/[0.03] hover:bg-white/[0.06] text-zinc-400 hover:text-zinc-200 text-[12px] font-medium transition-all disabled:opacity-50"
+              >
+                {portalLoading ? (
+                  <Loader2 size={12} className="animate-spin" />
+                ) : (
+                  <ExternalLink size={12} />
+                )}
+                Gérer l'abonnement
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* AI context banner */}
         <div className={`mb-8 flex items-start gap-3 px-4 py-3.5 rounded-xl border transition-all ${
