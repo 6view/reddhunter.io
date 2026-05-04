@@ -3,6 +3,7 @@ import { Flame, Compass, Search, Bookmark, Settings, FlaskConical, Zap } from 'l
 import { SignOutButton } from '@/components/sign-out-button'
 import { Logo } from '@/components/logo'
 import { OnboardingBanner } from '@/components/onboarding-banner'
+import { DashboardMobileNav } from '@/components/dashboard-mobile-nav'
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/lib/prisma'
 
@@ -99,10 +100,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* Main */}
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 pb-16 md:pb-0">
         <OnboardingBanner />
         {children}
       </main>
+
+      {/* Mobile bottom nav */}
+      <DashboardMobileNav />
     </div>
   )
 }

@@ -110,7 +110,15 @@ const config: Config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    // safe-area inset for iPhone notch / home indicator
+    function ({ addUtilities }: { addUtilities: (u: Record<string, Record<string, string>>) => void }) {
+      addUtilities({
+        '.safe-bottom': { paddingBottom: 'env(safe-area-inset-bottom)' },
+      })
+    },
+  ],
 }
 
 export default config
