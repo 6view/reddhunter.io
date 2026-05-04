@@ -17,6 +17,7 @@ type Profile = {
 }
 
 const PLAN_LABELS: Record<string, { label: string; color: string; desc: string }> = {
+  FREE:          { label: 'Free',        color: 'text-zinc-400',   desc: 'Viral Score 3/j · Comment Starter 1/j · Passe à Pro pour plus →' },
   PRO:           { label: 'Pro',         color: 'text-[#FF4500]',  desc: '5€/mois · Viral Score 20/j, Comment Starter 5/j' },
   PRO_ANNUAL:    { label: 'Pro Annual',  color: 'text-[#FF4500]',  desc: '50€/an · 2 mois offerts' },
   PRO_AI:        { label: 'Pro AI',      color: 'text-[#0dd3bb]',  desc: '15€/mois · IA illimitée + IA Lab' },

@@ -2,18 +2,13 @@ import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/lib/prisma'
-import fs from 'fs'
-import path from 'path'
-import type { ScrapeResult, RedditPost } from '@/scraper/types'
+import { fetchRedditPosts } from '@/lib/fetch-reddit'
+import type { RedditPost } from '@/scraper/types'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-function loadPosts(): RedditPost[] {
-  const outputDir = path.join(process.cwd(), 'scraper', 'output')
-  if (!fs.existsSync(outputDir)) return []
-  const files = fs.readdirSync(outputDir).filter(f => f.endsWith('.json')).sort().reverse()
-  if (files.length === 0) return []
-  const data = JSON.parse(fs.readFileSync(path.join(outputDir, files[0]), 'utf-8')) as ScrapeResult
+async function loadPosts(): Promise<RedditPost[]> {
+  const data = await fetchRedditPosts()
   return data.posts
 }
 
@@ -64,7 +59,7 @@ export async function POST() {
       return NextResponse.json({ error: 'no_profile' }, { status: 400 })
     }
 
-    const posts = loadPosts()
+    const posts = await loadPosts()
     if (posts.length === 0) return NextResponse.json({ error: 'no_data' }, { status: 400 })
 
     const candidates = prefilter(posts, user.keywords ?? '')

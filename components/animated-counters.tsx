@@ -28,7 +28,7 @@ export function AnimatedCounters() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setTriggered(true) },
-      { threshold: 0.3 }
+      { threshold: 0 }
     )
     const el = ref.current
     if (el) observer.observe(el)
@@ -36,7 +36,7 @@ export function AnimatedCounters() {
   }, [])
 
   const count135 = useCountUp(135, 1500, triggered)
-  const count6 = useCountUp(6, 1200, triggered)
+  const count24 = useCountUp(24, 1200, triggered)
 
   return (
     <div ref={ref} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -54,7 +54,7 @@ export function AnimatedCounters() {
       <div className="relative bg-[#111113] border border-[#27272a] rounded-xl p-8 text-center overflow-hidden group hover:border-[#3f3f46] transition-colors duration-300">
         <div className="absolute inset-0 bg-gradient-to-b from-[#FF4500]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         <div className="font-serif text-5xl mb-3 tabular-nums" style={{ color: '#FF4500' }}>
-          {triggered ? `${count6}h` : '0h'}
+          {triggered ? `${count24}h` : '0h'}
         </div>
         <p className="text-[#52525b] text-sm leading-relaxed">
           fréquence de mise à jour des posts

@@ -411,7 +411,7 @@ export function IaLabClient() {
                 <div>
                   <p className="text-[16px] font-semibold text-white mb-1">Recommandations pour {profile.businessName}</p>
                   <p className="text-[12px] text-zinc-600 max-w-sm leading-relaxed">
-                    Claude analyse les {395} posts scrappés et sélectionne les 12 plus stratégiques pour ton business.
+                    Claude analyse les posts Reddit du jour et sélectionne les 12 plus stratégiques pour ton business.
                   </p>
                 </div>
                 <button onClick={loadRecommendations}

@@ -230,12 +230,12 @@ function FilterPill({ active, onClick, children }: {
 // ─── Feed ─────────────────────────────────────────────────────────────────────
 
 const PAGE_SIZE = 20
-type TimeFilter = 'all' | 'today' | '7d' | '30d'
+type TimeFilter = 'all' | '48h' | '7d' | '30d'
 
 function filterByTime(posts: RedditPost[], tf: TimeFilter): RedditPost[] {
   const now = Date.now()
   const cutoffs: Record<TimeFilter, number> = {
-    all: 0, today: now - 86_400_000, '7d': now - 7 * 86_400_000, '30d': now - 30 * 86_400_000,
+    all: 0, '48h': now - 2 * 86_400_000, '7d': now - 7 * 86_400_000, '30d': now - 30 * 86_400_000,
   }
   const cutoff = cutoffs[tf]
   return cutoff === 0 ? posts : posts.filter(p => new Date(p.created_at).getTime() > cutoff)
@@ -356,7 +356,7 @@ export function ExploreFeed({ data }: { data: ScrapeResult }) {
 
       {/* Time filters */}
       <div className="flex items-center gap-2 mb-4 flex-wrap">
-        {([['all', 'Tous'], ['today', "Aujourd'hui"], ['7d', '7 jours'], ['30d', '30 jours']] as [TimeFilter, string][]).map(([val, label]) => (
+        {([['all', 'Tous'], ['48h', '48h'], ['7d', '7 jours'], ['30d', '30 jours']] as [TimeFilter, string][]).map(([val, label]) => (
           <FilterPill key={val} active={timeFilt === val} onClick={() => { setTimeFilt(val); setPage(1) }}>
             {label}
           </FilterPill>
