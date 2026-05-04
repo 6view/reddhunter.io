@@ -18,10 +18,36 @@ const instrumentSerif = Instrument_Serif({
   variable: '--font-serif',
 })
 
+const APP_URL = 'https://reddhunter-io.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'Reddhunter — Reddit Intelligence for Founders',
+  title: {
+    default: 'Reddhunter — Reddit Intelligence for Founders',
+    template: '%s — Reddhunter',
+  },
   description:
-    'Trouve les posts viraux de ta niche, génère des Viral Scores IA, et rédige tes commentaires GEO-optimisés — pour $5/mois.',
+    'Find viral Reddit posts in your niche, generate AI Viral Scores, and write GEO-optimized comments — for $5/month.',
+  keywords: ['reddit marketing', 'reddit growth', 'saas growth', 'indie hacker', 'viral reddit', 'reddit intelligence'],
+  authors: [{ name: 'Reddhunter' }],
+  creator: 'Reddhunter',
+  metadataBase: new URL(APP_URL),
+  openGraph: {
+    type: 'website',
+    url: APP_URL,
+    title: 'Reddhunter — Reddit Intelligence for Founders',
+    description: 'Find viral Reddit posts in your niche, generate AI Viral Scores, and write GEO-optimized comments — for $5/month.',
+    siteName: 'Reddhunter',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Reddhunter — Reddit Intelligence for Founders',
+    description: 'Find viral Reddit posts in your niche, generate AI Viral Scores, and write GEO-optimized comments — for $5/month.',
+    creator: '@reddhunter_io',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export default function RootLayout({
