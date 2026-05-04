@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Flame, Compass, Search, Bookmark, Settings, FlaskConical, Zap } from 'lucide-react'
 import { SignOutButton } from '@/components/sign-out-button'
 import { Logo } from '@/components/logo'
+import { OnboardingBanner } from '@/components/onboarding-banner'
 import { auth } from '@clerk/nextjs'
 import { prisma } from '@/lib/prisma'
 
@@ -99,6 +100,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       {/* Main */}
       <main className="flex-1 min-w-0">
+        <OnboardingBanner />
         {children}
       </main>
     </div>

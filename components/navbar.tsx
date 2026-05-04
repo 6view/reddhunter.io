@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import { useUser } from '@clerk/nextjs'
 import { CTALink, SignInLink } from '@/components/cta-link'
 import { NavbarMobile } from '@/components/navbar-mobile'
 import { Logo } from '@/components/logo'
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const { isSignedIn, isLoaded } = useUser()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -62,15 +64,26 @@ export function Navbar() {
 
         {/* CTA */}
         <div className="hidden md:flex items-center gap-2">
-          <SignInLink className="px-3.5 py-1.5 text-[12px] font-medium border border-white/[0.08] rounded-xl text-zinc-400 hover:text-white hover:border-white/[0.18] transition-colors">
-            Sign in
-          </SignInLink>
-          <CTALink
-            shine
-            className="px-3.5 py-1.5 text-[12px] font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-xl transition-colors duration-200 hover:shadow-[0_0_16px_rgba(255,69,0,0.4)]"
-          >
-            Get Started — $5/mo
-          </CTALink>
+          {isLoaded && isSignedIn ? (
+            <a
+              href="/dashboard/explore"
+              className="px-3.5 py-1.5 text-[12px] font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-xl transition-colors duration-200 hover:shadow-[0_0_16px_rgba(255,69,0,0.4)]"
+            >
+              Dashboard →
+            </a>
+          ) : (
+            <>
+              <SignInLink className="px-3.5 py-1.5 text-[12px] font-medium border border-white/[0.08] rounded-xl text-zinc-400 hover:text-white hover:border-white/[0.18] transition-colors">
+                Sign in
+              </SignInLink>
+              <CTALink
+                shine
+                className="px-3.5 py-1.5 text-[12px] font-semibold bg-[#FF4500] hover:bg-[#CC3700] text-white rounded-xl transition-colors duration-200 hover:shadow-[0_0_16px_rgba(255,69,0,0.4)]"
+              >
+                Get Started — $5/mo
+              </CTALink>
+            </>
+          )}
         </div>
 
         <NavbarMobile />

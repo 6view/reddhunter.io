@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Menu } from 'lucide-react'
+import { useUser } from '@clerk/nextjs'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { CTALink, SignInLink } from '@/components/cta-link'
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 
 export function NavbarMobile() {
   const [open, setOpen] = useState(false)
+  const { isSignedIn } = useUser()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -42,16 +44,20 @@ export function NavbarMobile() {
             </a>
           ))}
           <div className="flex flex-col gap-3 mt-4 border-t border-[#27272a] pt-6">
-            <Button
-              variant="outline"
-              className="border-[#3f3f46] text-zinc-300 bg-transparent hover:bg-[#1c1c1e] hover:text-white"
-              asChild
-            >
-              <SignInLink>Sign in</SignInLink>
-            </Button>
-            <Button className="bg-[#FF4500] hover:bg-[#CC3700] text-white" asChild>
-              <CTALink>Get Started — $5/mo</CTALink>
-            </Button>
+            {isSignedIn ? (
+              <Button className="bg-[#FF4500] hover:bg-[#CC3700] text-white" asChild>
+                <a href="/dashboard/explore" onClick={() => setOpen(false)}>Dashboard →</a>
+              </Button>
+            ) : (
+              <>
+                <Button variant="outline" className="border-[#3f3f46] text-zinc-300 bg-transparent hover:bg-[#1c1c1e] hover:text-white" asChild>
+                  <SignInLink>Sign in</SignInLink>
+                </Button>
+                <Button className="bg-[#FF4500] hover:bg-[#CC3700] text-white" asChild>
+                  <CTALink>Get Started — $5/mo</CTALink>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
       </SheetContent>
