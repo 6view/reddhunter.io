@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Route Tracer - Digne-les-Bains</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background: #f3f4f6;
+    }
+
+    header {
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .header-content {
+      max-width: 80rem;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+    }
+
+    .header-content h1 {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1f2937;
+    }
+
+    .header-content p {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .header-back {
+      color: #2563eb;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .header-back:hover {
+      color: #1d4ed8;
+    }
+
+    .map-container {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .control-panel {
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .panel-content {
+      max-width: 80rem;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 2rem;
+    }
+
+    .stats {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .stat-value {
+      font-size: 1.875rem;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .divider {
+      width: 2px;
+      height: 3rem;
+      background: #d1d5db;
+      margin: 0 1rem;
+    }
+
+    .stat-info {
+      font-size: 0.875rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .btn-toggle {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-toggle:hover {
+      background: #2563eb;
+    }
+
+    .btn-toggle.active {
+      background: #ef4444;
+    }
+
+    .btn-toggle.active:hover {
+      background: #dc2626;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #1f2937;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-purple {
+      background: #a855f7;
+      color: white;
+    }
+
+    .btn-purple:hover {
+      background: #9333ea;
+    }
+
+    .additional-info {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <div>
+        <h1>Route Tracer - Digne-les-Bains</h1>
+        <p>Tracez votre itinéraire de course à pied et calculez la distance</p>
+      </div>
+      <a href="/" class="header-back">← Retour</a>
+    </div>
+  </header>
+
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+
+  <div class="control-panel">
+    <div class="panel-content">
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-label">Distance totale</div>
+          <div class="stat-value" id="distance">0.00 km</div>
+        </div>
+        <div class="divider"></div>
+        <div class="stat-info">
+          <div id="points">0 points tracés</div>
+          <div id="duration" style="display: none;">Durée estimée: <span id="durationValue">0</span> min</div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="btn-toggle" id="toggleDrawBtn">✏️ Commencer le traçage</button>
+        <button class="btn-secondary" id="resetBtn" title="Réinitialiser">↻</button>
+        <button class="btn-success" id="downloadBtn" title="Télécharger en JSON">⬇</button>
+        <button class="btn-purple" id="exportGpxBtn" title="Exporter en GPX">📤</button>
+      </div>
+    </div>
+
+    <div class="panel-content" id="additionalInfo" style="display: none;">
+      <div class="additional-info">
+        Allure moyenne: <span id="avgPace">0.0</span> min/km
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map
+    const DIGNE_CENTER = [44.0895, 6.2303];
+    const map = L.map('map').setView(DIGNE_CENTER, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19,
+    }).addTo(map);
+
+    L.marker(DIGNE_CENTER)
+      .bindPopup('<b>Digne-les-Bains</b>')
+      .addTo(map);
+
+    // State
+    let isDrawing = false;
+    let route = {
+      points: [],
+      distance: 0
+    };
+    let polyline = null;
+    const markers = [];
+
+    // Haversine distance calculation
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371; // Radius of Earth in km
+      const dLat = (lat2 - lat1) * (Math.PI / 180);
+      const dLng = (lng2 - lng1) * (Math.PI / 180);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function calculateTotalDistance(points) {
+      let total = 0;
+      for (let i = 1; i < points.length; i++) {
+        total += calculateDistance(
+          points[i - 1].lat,
+          points[i - 1].lng,
+          points[i].lat,
+          points[i].lng
+        );
+      }
+      return total;
+    }
+
+    function updateUI() {
+      document.getElementById('distance').textContent = route.distance.toFixed(2) + ' km';
+      document.getElementById('points').textContent = route.points.length + ' points tracés';
+
+      if (route.distance > 0) {
+        const estimatedDuration = Math.round((route.distance / 10) * 60);
+        document.getElementById('duration').style.display = 'block';
+        document.getElementById('durationValue').textContent = estimatedDuration;
+
+        document.getElementById('additionalInfo').style.display = 'block';
+        document.getElementById('avgPace').textContent = (60 / (route.distance / 10)).toFixed(1);
+      } else {
+        document.getElementById('duration').style.display = 'none';
+        document.getElementById('additionalInfo').style.display = 'none';
+      }
+    }
+
+    // Map click handler
+    map.on('click', function(e) {
+      if (!isDrawing) return;
+
+      const { lat, lng } = e.latlng;
+      route.points.push({ lat, lng });
+
+      // Add marker
+      const marker = L.circleMarker([lat, lng], {
+        radius: 5,
+        fillColor: '#3b82f6',
+        color: '#1e40af',
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8,
+      }).addTo(map);
+      markers.push(marker);
+
+      // Update polyline
+      if (polyline) {
+        map.removeLayer(polyline);
+      }
+
+      polyline = L.polyline(
+        route.points.map((p) => [p.lat, p.lng]),
+        {
+          color: '#3b82f6',
+          weight: 3,
+          opacity: 0.8,
+          smoothFactor: 1.0,
+        }
+      ).addTo(map);
+
+      // Calculate distance
+      route.distance = calculateTotalDistance(route.points);
+      updateUI();
+    });
+
+    // Button handlers
+    const toggleDrawBtn = document.getElementById('toggleDrawBtn');
+    toggleDrawBtn.addEventListener('click', function() {
+      isDrawing = !isDrawing;
+      toggleDrawBtn.classList.toggle('active');
+      toggleDrawBtn.textContent = isDrawing ? '✏️ En cours de traçage... Cliquez' : '✏️ Commencer le traçage';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      route = { points: [], distance: 0 };
+      isDrawing = false;
+      toggleDrawBtn.classList.remove('active');
+      toggleDrawBtn.textContent = '✏️ Commencer le traçage';
+
+      // Remove markers and polyline
+      markers.forEach(m => map.removeLayer(m));
+      markers.length = 0;
+      if (polyline) {
+        map.removeLayer(polyline);
+        polyline = null;
+      }
+
+      updateUI();
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      const data = JSON.stringify(route, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `route-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('exportGpxBtn').addEventListener('click', function() {
+      const gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1">
+  <trk>
+    <name>Route de course - Digne-les-Bains</name>
+    <trkseg>
+      ${route.points
+        .map(
+          (p) => `      <trkpt lat="${p.lat}" lon="${p.lng}">
+        <ele>0</ele>
+      </trkpt>`
+        )
+        .join('\n')}
+    </trkseg>
+  </trk>
+</gpx>`;
+
+      const blob = new Blob([gpxContent], { type: 'application/gpx+xml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `route-${new Date().toISOString().slice(0, 10)}.gpx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body>
+</html>
